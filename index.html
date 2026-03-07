@@ -1,1 +1,380 @@
-HelloWorld
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="title">System Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        * {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+
+        .animate-pulse-slow {
+            animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .lang-btn {
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen grid-bg">
+    <!-- Navigation -->
+    <nav class="glass fixed top-0 left-0 right-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center">
+                    <i class="fa fa-cube text-white text-xl"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight" data-i18n="brand">NEXUS</span>
+            </div>
+
+            <div class="flex items-center space-x-4">
+                <button onclick="setLanguage('zh')" id="lang-zh"
+                    class="lang-btn px-3 py-1 rounded-lg border border-white/10 text-sm hover:bg-white/10">
+                    中文
+                </button>
+                <button onclick="setLanguage('en')" id="lang-en"
+                    class="lang-btn px-3 py-1 rounded-lg border border-white/10 text-sm hover:bg-white/10">
+                    EN
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 px-6 overflow-hidden">
+        <div class="absolute top-20 left-10 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="absolute bottom-20 right-10 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse-slow"
+            style="animation-delay: 2s;"></div>
+
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center max-w-3xl mx-auto">
+                <div class="inline-flex items-center space-x-2 px-4 py-2 rounded-full glass mb-8">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span class="text-sm text-gray-300" data-i18n="status">System Operational</span>
+                </div>
+
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                    <span class="gradient-text" data-i18n="heroTitle">Next Generation Platform</span>
+                </h1>
+
+                <p class="text-xl text-gray-400 mb-10 leading-relaxed" data-i18n="heroDesc">
+                    Experience the future of digital infrastructure with our cutting-edge solutions
+                </p>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <button
+                        class="gradient-bg px-8 py-4 rounded-xl font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all flex items-center justify-center space-x-2 group">
+                        <span data-i18n="startBtn">Get Started</span>
+                        <i class="fa fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                    <button class="glass px-8 py-4 rounded-xl font-medium hover:bg-white/10 transition-all"
+                        data-i18n="learnBtn">
+                        Learn More
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="glass rounded-2xl p-8 hover:bg-white/10 transition-all group">
+                    <div
+                        class="w-14 h-14 rounded-xl bg-blue-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa fa-shield text-blue-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3" data-i18n="feature1Title">Secure</h3>
+                    <p class="text-gray-400" data-i18n="feature1Desc">Enterprise-grade security protocols</p>
+                </div>
+
+                <div class="glass rounded-2xl p-8 hover:bg-white/10 transition-all group">
+                    <div
+                        class="w-14 h-14 rounded-xl bg-purple-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa fa-bolt text-purple-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3" data-i18n="feature2Title">Fast</h3>
+                    <p class="text-gray-400" data-i18n="feature2Desc">Lightning-fast performance</p>
+                </div>
+
+                <div class="glass rounded-2xl p-8 hover:bg-white/10 transition-all group">
+                    <div
+                        class="w-14 h-14 rounded-xl bg-green-500/20 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa fa-globe text-green-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3" data-i18n="feature3Title">Global</h3>
+                    <p class="text-gray-400" data-i18n="feature3Desc">Worldwide network coverage</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="glass rounded-3xl p-12">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                    <div>
+                        <div class="text-4xl md:text-5xl font-bold gradient-text mb-2">99.9%</div>
+                        <div class="text-gray-400" data-i18n="stat1">Uptime</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl md:text-5xl font-bold gradient-text mb-2">150+</div>
+                        <div class="text-gray-400" data-i18n="stat2">Regions</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl md:text-5xl font-bold gradient-text mb-2">10M+</div>
+                        <div class="text-gray-400" data-i18n="stat3">Users</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl md:text-5xl font-bold gradient-text mb-2">24/7</div>
+                        <div class="text-gray-400" data-i18n="stat4">Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Section -->
+    <section class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="glass rounded-3xl p-8 md:p-12">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-2" data-i18n="apiTitle">API Reference</h2>
+                        <p class="text-gray-400" data-i18n="apiDesc">Simple and powerful API endpoints</p>
+                    </div>
+                    <button
+                        class="mt-4 md:mt-0 glass px-6 py-3 rounded-xl hover:bg-white/10 transition-all flex items-center space-x-2">
+                        <i class="fa fa-book"></i>
+                        <span data-i18n="docsBtn">Documentation</span>
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <div
+                        class="bg-gray-800/50 rounded-xl p-6 flex items-center justify-between hover:bg-gray-800/70 transition-all cursor-pointer group">
+                        <div class="flex items-center space-x-4">
+                            <span
+                                class="px-3 py-1 rounded-lg bg-green-500/20 text-green-400 text-sm font-mono">GET</span>
+                            <code class="text-gray-300 group-hover:text-white transition-colors">/v1/status</code>
+                        </div>
+                        <i class="fa fa-chevron-right text-gray-500 group-hover:text-white transition-colors"></i>
+                    </div>
+
+                    <div
+                        class="bg-gray-800/50 rounded-xl p-6 flex items-center justify-between hover:bg-gray-800/70 transition-all cursor-pointer group">
+                        <div class="flex items-center space-x-4">
+                            <span
+                                class="px-3 py-1 rounded-lg bg-blue-500/20 text-blue-400 text-sm font-mono">POST</span>
+                            <code class="text-gray-300 group-hover:text-white transition-colors">/v1/data</code>
+                        </div>
+                        <i class="fa fa-chevron-right text-gray-500 group-hover:text-white transition-colors"></i>
+                    </div>
+
+                    <div
+                        class="bg-gray-800/50 rounded-xl p-6 flex items-center justify-between hover:bg-gray-800/70 transition-all cursor-pointer group">
+                        <div class="flex items-center space-x-4">
+                            <span
+                                class="px-3 py-1 rounded-lg bg-purple-500/20 text-purple-400 text-sm font-mono">GET</span>
+                            <code class="text-gray-300 group-hover:text-white transition-colors">/v1/config</code>
+                        </div>
+                        <i class="fa fa-chevron-right text-gray-500 group-hover:text-white transition-colors"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 border-t border-white/10">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-3 mb-4 md:mb-0">
+                    <div class="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center">
+                        <i class="fa fa-cube text-white"></i>
+                    </div>
+                    <span class="font-bold">NEXUS</span>
+                </div>
+
+                <div class="flex space-x-6 text-gray-400">
+                    <a href="#" class="hover:text-white transition-colors"><i class="fa fa-github text-xl"></i></a>
+                    <a href="#" class="hover:text-white transition-colors"><i class="fa fa-twitter text-xl"></i></a>
+                    <a href="#" class="hover:text-white transition-colors"><i class="fa fa-linkedin text-xl"></i></a>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-8 border-t border-white/10 text-center text-gray-500 text-sm">
+                <span data-i18n="copyright">© 2026 NEXUS. All rights reserved.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // 语言配置
+        const i18n = {
+            zh: {
+                title: "系统门户",
+                brand: "NEXUS",
+                status: "系统运行正常",
+                heroTitle: "下一代平台",
+                heroDesc: "体验我们尖端解决方案的数字基础设施未来",
+                startBtn: "开始使用",
+                learnBtn: "了解更多",
+                feature1Title: "安全",
+                feature1Desc: "企业级安全协议",
+                feature2Title: "快速",
+                feature2Desc: "闪电般的性能表现",
+                feature3Title: "全球",
+                feature3Desc: "全球网络覆盖",
+                stat1: "正常运行时间",
+                stat2: "覆盖区域",
+                stat3: "用户数量",
+                stat4: "技术支持",
+                apiTitle: "API 参考",
+                apiDesc: "简单强大的API接口",
+                docsBtn: "查看文档",
+                copyright: "© 2026 NEXUS. 保留所有权利。"
+            },
+            en: {
+                title: "System Portal",
+                brand: "NEXUS",
+                status: "System Operational",
+                heroTitle: "Next Generation Platform",
+                heroDesc: "Experience the future of digital infrastructure with our cutting-edge solutions",
+                startBtn: "Get Started",
+                learnBtn: "Learn More",
+                feature1Title: "Secure",
+                feature1Desc: "Enterprise-grade security protocols",
+                feature2Title: "Fast",
+                feature2Desc: "Lightning-fast performance",
+                feature3Title: "Global",
+                feature3Desc: "Worldwide network coverage",
+                stat1: "Uptime",
+                stat2: "Regions",
+                stat3: "Users",
+                stat4: "Support",
+                apiTitle: "API Reference",
+                apiDesc: "Simple and powerful API endpoints",
+                docsBtn: "Documentation",
+                copyright: "© 2026 NEXUS. All rights reserved."
+            }
+        };
+
+        // 当前语言
+        let currentLang = 'zh';
+
+        // 设置语言
+        function setLanguage(lang) {
+            currentLang = lang;
+
+            // 更新按钮状态
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`lang-${lang}`).classList.add('active');
+
+            // 更新页面内容
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[lang][key]) {
+                    el.textContent = i18n[lang][key];
+                }
+            });
+
+            // 更新页面标题
+            document.title = i18n[lang].title;
+
+            // 保存语言偏好
+            localStorage.setItem('preferredLanguage', lang);
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function () {
+            // 检查本地存储的语言偏好
+            const savedLang = localStorage.getItem('preferredLanguage');
+            if (savedLang && i18n[savedLang]) {
+                setLanguage(savedLang);
+            } else {
+                // 默认中文
+                setLanguage('zh');
+            }
+        });
+
+        // 模拟数据获取
+        async function fetchData() {
+            try {
+                const response = await fetch('backend_data.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Data loaded:', data);
+                    return data;
+                }
+            } catch (error) {
+                console.log('Using local data');
+                return null;
+            }
+        }
+
+        // 自动获取数据
+        fetchData();
+    </script>
+</body>
+
+</html>
