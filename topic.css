@@ -1,0 +1,239 @@
+/* ========== 专题页公共样式 ==========
+   Hero / 介绍卡片 严格复用首页 style.css 的 hero 与关于页 about-value 的视觉规范
+*/
+
+.topic-page {
+  padding-top: 0;
+  padding-bottom: var(--space-16);
+}
+
+.topic-page__container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+/* ---- Hero 横幅（与首页 .hero 视觉一致，左对齐） ---- */
+.topic-hero {
+  /* 与首页 .hero 完全一致：navbar 高度 + 一个较大 section 间距，避免大字顶到导航栏 */
+  padding: calc(var(--navbar-height) + var(--space-16)) 0 var(--space-16);
+  margin-bottom: var(--space-16);
+  border-bottom: 1px solid var(--color-border);
+  position: relative;
+}
+
+.topic-hero::after {
+  display: none;
+}
+
+.topic-hero__eyebrow {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  margin-bottom: var(--space-5);
+  padding: 4px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-muted);
+}
+
+.topic-hero__title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-5);
+  color: var(--color-text);
+  text-align: left;
+}
+
+.topic-hero__subtitle {
+  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  color: var(--color-text-secondary);
+  /* eyebrow→title / title→subtitle / subtitle→meta 统一 bottom: var(--space-5) */
+  margin: 0 0 var(--space-5) 0;
+  line-height: 1.9;
+  max-width: 720px;
+  font-weight: 400;
+}
+
+.topic-hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5) var(--space-8);
+  padding: var(--space-5) var(--space-6);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  max-width: 720px;
+  margin-top: 0;
+}
+
+.topic-hero__meta-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+
+.topic-hero__meta-item i {
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-subtle);
+  flex-shrink: 0;
+}
+
+.topic-hero__meta-item span+span {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+/* ---- 介绍卡片（严格对齐关于页 .about-value） ---- */
+.topic-intro {
+  margin-bottom: var(--space-16);
+}
+
+.topic-intro__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-5);
+}
+
+.topic-intro__card {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  transition: border-color var(--transition-base);
+}
+
+.topic-intro__card:hover {
+  border-color: var(--color-accent);
+}
+
+.topic-intro__card i {
+  width: 24px;
+  height: 24px;
+  display: block;
+  padding: 12px;
+  background: var(--color-bg-muted);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+  color: var(--color-accent);
+  box-sizing: content-box;
+}
+
+.topic-intro__card h3 {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+}
+
+.topic-intro__card p {
+  font-size: var(--font-size-sm);
+  line-height: 1.7;
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ---- 区块通用（与首页 section-header 风格保持一致） ---- */
+.topic-section {
+  margin-bottom: var(--space-16);
+}
+
+.topic-section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.topic-section__title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-text);
+  font-family: var(--font-display);
+}
+
+.topic-section__more {
+  font-size: 14px;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+  font-family: var(--font-ui);
+}
+
+.topic-section__more:hover {
+  color: var(--color-text);
+}
+
+/* ========== 响应式（与全局 style.css 断点同步） ========== */
+@media (max-width: 1024px) {
+  .topic-page__container {
+    max-width: 100%;
+    padding: 0 var(--space-5);
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* 与全局 style.css#L1601-L1603 的 .hero 响应式完全一致 */
+  .topic-hero {
+    padding-top: calc(var(--navbar-height) + var(--space-12));
+    padding-bottom: var(--space-12);
+    margin-bottom: var(--space-12);
+  }
+
+  .topic-intro__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .topic-intro {
+    margin-bottom: var(--space-12);
+  }
+
+  .topic-section {
+    margin-bottom: var(--space-12);
+  }
+
+  .topic-hero__meta {
+    padding: var(--space-5);
+    gap: var(--space-4) var(--space-6);
+  }
+}
+
+@media (max-width: 480px) {
+  .topic-hero {
+    padding-top: calc(var(--navbar-height) + var(--space-10));
+    padding-bottom: var(--space-10);
+    margin-bottom: var(--space-10);
+  }
+
+  .topic-intro {
+    margin-bottom: var(--space-10);
+  }
+
+  .topic-hero__meta-item {
+    font-size: 13px;
+  }
+
+  .topic-section {
+    margin-bottom: var(--space-12);
+  }
+
+  .topic-section__header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+}

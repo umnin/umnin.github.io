@@ -1,0 +1,502 @@
+/* ========== 留言页面样式 ========== */
+
+.message-page {
+  padding-top: calc(var(--navbar-height) + var(--space-12));
+  padding-bottom: var(--space-16);
+  min-height: 80vh;
+}
+
+.message-page__container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+}
+
+/* 页面标题 */
+.message-page__header {
+  text-align: center;
+  margin-bottom: var(--space-10);
+}
+
+.message-page__title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-3);
+}
+
+.message-page__subtitle {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-base);
+}
+
+/* ========== Tab 切换 ========== */
+.message-tabs {
+  display: flex;
+  gap: var(--space-2);
+  background: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+  margin-bottom: var(--space-8);
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.message-tabs__btn {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  font-family: var(--font-ui);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.message-tabs__btn i {
+  width: 16px;
+  height: 16px;
+}
+
+.message-tabs__btn:hover {
+  color: var(--color-text);
+  background: var(--color-bg-elevated);
+}
+
+.message-tabs__btn--active {
+  background: var(--color-bg);
+  border-color: var(--color-border);
+  color: var(--color-text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.message-tabs__btn--active i {
+  color: var(--color-accent);
+}
+
+/* 区块标题 */
+.message-section__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-6);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.message-section__title i {
+  color: var(--color-accent);
+}
+
+/* ========== 作者选择器 ========== */
+.author-picker {
+  margin-bottom: var(--space-6);
+  padding: var(--space-5);
+  background: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.author-picker__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+}
+
+.author-picker__label i {
+  color: var(--color-accent);
+  width: 16px;
+  height: 16px;
+}
+
+.author-picker__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-3);
+}
+
+.author-picker__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.18s ease;
+  text-align: left;
+  position: relative;
+  font-family: var(--font-ui);
+}
+
+.author-picker__item:hover {
+  border-color: var(--color-text-muted);
+  transform: translateY(-1px);
+}
+
+.author-picker__item--selected {
+  border-color: var(--color-accent);
+  background: rgba(22, 163, 74, 0.04);
+}
+
+.author-picker__item img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--color-border);
+}
+
+.author-picker__item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.author-picker__item-name {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.author-picker__item-role {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.author-picker__check {
+  color: var(--color-accent);
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ========== 空状态 ========== */
+.message-empty {
+  text-align: center;
+  padding: var(--space-14) var(--space-6);
+  color: var(--color-text-muted);
+}
+
+.message-empty i {
+  width: 40px;
+  height: 40px;
+  margin-bottom: var(--space-4);
+  opacity: 0.5;
+}
+
+.message-empty p {
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+/* ========== 留言列表 ========== */
+.message-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.message-item {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  transition: border-color 0.2s ease;
+}
+
+.message-item:hover {
+  border-color: var(--color-text-muted);
+}
+
+.message-item--to-author {
+  border-left: 3px solid var(--color-accent);
+}
+
+.message-item__target {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-4);
+  background: var(--color-bg-muted);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.message-item__target i {
+  width: 16px;
+  height: 16px;
+  color: var(--color-accent);
+}
+
+.message-item__target img {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--color-border);
+}
+
+.message-item__target-name {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.message-item__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.message-item__user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.message-item__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-bg-muted);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.message-item__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.message-item__nickname {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.message-item__time {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.message-item__delete {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  flex-shrink: 0;
+}
+
+.message-item__delete:hover {
+  background: rgba(220, 38, 38, 0.08);
+  border-color: rgba(220, 38, 38, 0.2);
+  color: var(--color-danger);
+}
+
+.message-item__delete i {
+  width: 16px;
+  height: 16px;
+}
+
+.message-item__content {
+  margin: 0;
+  font-size: var(--font-size-base);
+  line-height: 1.7;
+  color: var(--color-text);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* 留言表单区块 */
+.message-form-section {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+}
+
+/* 表单样式 */
+.message-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.message-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+}
+
+.message-form__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.message-form__group label {
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.message-form__group input,
+.message-form__group textarea {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-base);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.message-form__group input:focus,
+.message-form__group textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
+}
+
+.message-form__group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.message-form__counter {
+  align-self: flex-end;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.message-form__submit {
+  align-self: flex-end;
+  gap: var(--space-2);
+}
+
+/* Toast 提示 */
+.message-toast {
+  position: fixed;
+  bottom: var(--space-8);
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--color-text);
+  color: var(--color-bg);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  opacity: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.message-toast--show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.message-toast--error {
+  background: var(--color-danger);
+}
+
+/* ========== 响应式 ========== */
+@media (max-width: 768px) {
+  .message-form__row {
+    grid-template-columns: 1fr;
+  }
+
+  .message-form-section {
+    padding: var(--space-6);
+  }
+
+  .message-page__container {
+    padding: 0 var(--space-4);
+  }
+
+  .author-picker {
+    padding: var(--space-4);
+  }
+
+  .author-picker__list {
+    grid-template-columns: 1fr;
+  }
+
+  .message-item {
+    padding: var(--space-5);
+  }
+
+  .message-item__target {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .message-form__submit {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .message-tabs {
+    flex-direction: column;
+  }
+
+  .message-tabs__btn {
+    width: 100%;
+  }
+
+  .message-page__header {
+    margin-bottom: var(--space-8);
+  }
+}
