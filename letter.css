@@ -1,0 +1,86 @@
+/* ========== 隐藏信页样式（/letter/） ==========
+   不在任何导航、列表或链接中出现。
+   视觉 token 全部复用 style.css；
+   核心机制：白天显示提示、深夜（暗色主题）才显示真正的最后一行字。
+*/
+
+.letter-card {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+}
+
+.letter-card p {
+  font-size: 15px;
+  line-height: 2;
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-5);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.letter-card__sign {
+  text-align: right;
+  color: var(--color-text);
+  font-weight: 600;
+  margin-top: var(--space-10) !important;
+  margin-bottom: 0 !important;
+}
+
+.letter-card__sign span {
+  display: block;
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--color-text-muted);
+  margin-top: var(--space-2);
+}
+
+/* 白天可见的提示：引导切换深夜模式 */
+.letter-hint {
+  font-size: 13px !important;
+  color: var(--color-text-muted) !important;
+  border-left: 3px solid var(--color-border);
+  padding: var(--space-2) 0 var(--space-2) var(--space-5);
+}
+
+/* 深夜才显形的字：默认隐藏 */
+.letter-hidden {
+  display: none;
+  border-left: 3px solid var(--color-border-strong);
+  padding: var(--space-2) 0 var(--space-2) var(--space-5);
+  color: var(--color-text-muted);
+}
+
+/* 手动切换到暗色主题 */
+[data-theme="dark"] .letter-hidden {
+  display: block;
+}
+
+[data-theme="dark"] .letter-hint {
+  display: none;
+}
+
+/* 跟随系统暗色（未手动设置主题时） */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .letter-hidden {
+    display: block;
+  }
+
+  :root:not([data-theme="light"]) .letter-hint {
+    display: none;
+  }
+}
+
+/* [ARG] 人名信号干扰：乱码跳动，每周期短暂解码成真名又糊掉（JS 驱动） */
+.glitch-name {
+  font-family: ui-monospace, "Cascadia Mono", Consolas, "Courier New", monospace;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .letter-card {
+    padding: var(--space-5);
+  }
+}

@@ -6,11 +6,17 @@
 (function () {
   'use strict';
 
+  // 路径前缀：子目录页面通过内联脚本注入 window.ASSET_BASE='../'，根目录页面为 ''
+  var BASE = window.ASSET_BASE || '';
+  function assetUrl(p) {
+    if (!p || /^(https?:)?\/\//.test(p)) return p;
+    return BASE + p;
+  }
+
   // 每个专题页对应的容器 ID（页面 ID、Hero、简介卡、列表）
   var PAGE_BINDINGS = {
     griefPage: { hero: 'griefHero', intro: 'griefIntro', list: 'griefArticles', count: null },
-    depressionPage: { hero: 'depressionHero', intro: 'depressionIntro', list: 'depressionArticles', count: null },
-    psychologyPage: { hero: 'psychologyHero', intro: 'psychologyIntro', list: 'psychologyArticles', count: null }
+    depressionPage: { hero: 'depressionHero', intro: 'depressionIntro', list: 'depressionArticles', count: null }
   };
 
   function getData() {
@@ -86,16 +92,18 @@
       '<article class="article-card card-reveal" data-id="' + article.id + '" ' +
       'style="transition-delay:' + (idx * 60) + 'ms; cursor: pointer;">' +
       '<div class="article-card__cover">' +
-      '<img src="' + article.cover + '" alt="' + article.title + '" loading="lazy">' +
+      '<img src="' + assetUrl(article.cover) + '" alt="' + article.title + '" loading="lazy">' +
       '</div>' +
       '<div class="article-card__body">' +
       '<span class="article-card__tag">' + article.categoryName + '</span>' +
       '<h3 class="article-card__title">' + article.title + '</h3>' +
       '<p class="article-card__excerpt">' + article.excerpt + '</p>' +
       '<div class="article-card__meta">' +
-      '<a href="search.html?author=' + encodeURIComponent(author.name) + '" ' +
+      '<a href="' + BASE + 'search/?author=' + encodeURIComponent(author.name) + '" ' +
       'class="article-card__author" onclick="event.stopPropagation()">' +
-      '<img src="' + author.avatar + '" alt="' + author.name + '">' +
+      (author.avatar
+        ? '<img src="' + assetUrl(author.avatar) + '" alt="' + author.name + '">'
+        : '<span class="default-avatar">' + author.name.charAt(0) + '</span>') +
       '<span>' + author.name + '</span>' +
       '</a>' +
       '<span class="article-card__dot article-card__dot--spacer"></span>' +
@@ -209,7 +217,7 @@
 
         listEl.querySelectorAll('.article-card').forEach(function (card) {
           card.addEventListener('click', function () {
-            window.location.href = 'article.html?id=' + card.dataset.id;
+            window.location.href = BASE + 'article/?id=' + card.dataset.id;
           });
         });
       }

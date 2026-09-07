@@ -9,6 +9,29 @@
   // 引用外部文章数据
   const MOCK_DATA = ARTICLES_DATA;
 
+  // 路径前缀：子目录页面（grief/、search/ 等）通过内联脚本注入 window.ASSET_BASE='../'，
+  // 根目录页面默认为 ''。用于拼接站内链接与图片等静态资源路径
+  const BASE = window.ASSET_BASE || '';
+  const assetUrl = (p) => (!p || /^(https?:)?\/\//.test(p) || p.startsWith('data:')) ? p : BASE + p;
+
+  // [ARG 线索] 搜索页隐藏关键词：不在任何文章里出现，搜中后返回一张"不存在的文章"卡片
+  const ARG_SECRETS = {
+    '722转32': {
+      title: '给读得很慢的人',
+      excerpt: '这不是一篇文章。它没有作者署名，没有日期，也不在任何分类里。如果你在搜索结果里看见了它——说明有人一直在等你。',
+      cover: 'image/bg_huochezhan.png',
+      href: BASE + 'letter/'
+    }
+  };
+
+  // [ARG 线索] 记录探索进度（仅存于访客本地浏览器）
+  function argProgress(data) {
+    try {
+      const prev = JSON.parse(localStorage.getItem('problog_arg') || '{}');
+      localStorage.setItem('problog_arg', JSON.stringify(Object.assign(prev, data, { at: new Date().toISOString() })));
+    } catch (e) { }
+  }
+
   // ============================================
   //  DOM 引用缓存
   // ============================================
@@ -69,6 +92,18 @@
     // 根据 ID 获取作者信息
     getAuthor(id) {
       return MOCK_DATA.authors.find(a => a.id === id) || { name: '未知作者', avatar: '', title: '', bio: '' };
+    },
+
+    // 作者头像 HTML：有专属头像图用图片；没有则用博客默认头像（名字首字灰底块）
+    // imgClass：复用现有头像尺寸类（如 author-card__avatar），默认头像会叠加 default-avatar
+    avatarHtml(author, imgClass) {
+      const name = (author && author.name) || '未知';
+      const alt = name + '头像';
+      if (author && author.avatar) {
+        return `<img${imgClass ? ` class="${imgClass}"` : ''} src="${assetUrl(author.avatar)}" alt="${alt}">`;
+      }
+      const cls = imgClass ? `${imgClass} default-avatar` : 'default-avatar';
+      return `<span class="${cls}" aria-label="${alt}">${name.charAt(0)}</span>`;
     }
   };
 
@@ -136,7 +171,7 @@
       const triggerSearch = () => {
         const keyword = DOM.searchInput.value.trim();
         if (!keyword) return false;
-        window.location.href = `search.html?q=${encodeURIComponent(keyword)}`;
+        window.location.href = `${BASE}search/?q=${encodeURIComponent(keyword)}`;
         return true;
       };
 
@@ -219,17 +254,17 @@
       widget.innerHTML = `
         <div class="author-card">
           <div class="author-card__cover"></div>
-          <a href="search.html?author=${encodeURIComponent(author.name)}" class="author-card__avatar-link">
-            <img class="author-card__avatar" src="${author.avatar}" alt="${author.name}头像">
+          <a href="${BASE}search/?author=${encodeURIComponent(author.name)}" class="author-card__avatar-link">
+            ${utils.avatarHtml(author, 'author-card__avatar')}
           </a>
-          <a href="search.html?author=${encodeURIComponent(author.name)}" class="author-card__name-link">
+          <a href="${BASE}search/?author=${encodeURIComponent(author.name)}" class="author-card__name-link">
             <h3 class="author-card__name">${author.name}</h3>
           </a>
           <p class="author-card__role">${author.title}</p>
           <p class="author-card__bio">${author.bio}</p>
           <div class="author-card__socials">
             <a href="javascript:void(0)" class="author-phone-btn" data-author-id="${author.id}" aria-label="电话"><i data-lucide="phone"></i></a>
-            <a href="message.html?author=${encodeURIComponent(author.name)}" aria-label="给${author.name}留言"><i data-lucide="message-circle"></i></a>
+            <a href="${BASE}message/?author=${encodeURIComponent(author.name)}" aria-label="给${author.name}留言"><i data-lucide="message-circle"></i></a>
             <a href="javascript:void(0)" class="author-email-btn" data-author-id="${author.id}" aria-label="邮箱"><i data-lucide="mail"></i></a>
           </div>
         </div>`;
@@ -249,19 +284,20 @@
 
       DOM.articlesList.innerHTML = data.map((article, idx) => {
         const isFeatured = article.featured;
+        const articleAuthor = utils.getAuthor(article.authorId);
         return `
           <article class="article-card ${isFeatured ? 'article-card--featured' : ''} card-reveal" data-id="${article.id}" style="transition-delay:${idx * 60}ms; cursor: pointer;">
             <div class="article-card__cover">
-              <img src="${article.cover}" alt="${article.title}" loading="lazy">
+              <img src="${assetUrl(article.cover)}" alt="${article.title}" loading="lazy">
             </div>
             <div class="article-card__body">
               <span class="article-card__tag">${article.categoryName}</span>
               <h3 class="article-card__title">${article.title}</h3>
               <p class="article-card__excerpt">${article.excerpt}</p>
               <div class="article-card__meta">
-                <a href="search.html?author=${encodeURIComponent(utils.getAuthor(article.authorId).name)}" class="article-card__author" onclick="event.stopPropagation()">
-                  <img src="${utils.getAuthor(article.authorId).avatar}" alt="${utils.getAuthor(article.authorId).name}">
-                  <span>${utils.getAuthor(article.authorId).name}</span>
+                <a href="${BASE}search/?author=${encodeURIComponent(articleAuthor.name)}" class="article-card__author" onclick="event.stopPropagation()">
+                  ${utils.avatarHtml(articleAuthor)}
+                  <span>${articleAuthor.name}</span>
                 </a>
                 <span class="article-card__dot article-card__dot--spacer"></span>
                 <time datetime="${article.date}">${utils.formatDate(article.date)}</time>
@@ -274,7 +310,7 @@
       // 绑定卡片点击跳转
       DOM.articlesList.querySelectorAll('.article-card').forEach(card => {
         card.addEventListener('click', () => {
-          window.location.href = `article.html?id=${card.dataset.id}`;
+          window.location.href = `${BASE}article/?id=${card.dataset.id}`;
         });
       });
 
@@ -300,8 +336,8 @@
         const encoded = encodeURIComponent(name);
         return `
           <li class="category-list__item">
-            <a href="search.html?category=${encoded}" class="category-list__link">${name}</a>
-            <a href="search.html?category=${encoded}" class="category-list__count" aria-label="${name}分类共${count}篇">${count}</a>
+            <a href="${BASE}search/?category=${encoded}" class="category-list__link">${name}</a>
+            <a href="${BASE}search/?category=${encoded}" class="category-list__count" aria-label="${name}分类共${count}篇">${count}</a>
           </li>
         `;
       }).join('');
@@ -310,7 +346,7 @@
 
     renderTags() {
       DOM.tagCloud.innerHTML = MOCK_DATA.tags.map(tag => `
-        <a class="tag-cloud__tag tag-cloud__tag--${tag.size}" href="search.html?tag=${encodeURIComponent(tag.name)}">${tag.name}</a>
+        <a class="tag-cloud__tag tag-cloud__tag--${tag.size}" href="${BASE}search/?tag=${encodeURIComponent(tag.name)}">${tag.name}</a>
       `).join('');
     }
   };
@@ -350,14 +386,13 @@
     },
 
     initCounterObserver() {
-      // 访问人数：基于 localStorage 本地计数
-      const visitorEl = document.getElementById('visitorCount');
-      if (visitorEl) {
-        let visitors = parseInt(localStorage.getItem('problog_visitors') || '10000', 10);
-        visitors += 1;
-        localStorage.setItem('problog_visitors', visitors);
-        visitorEl.dataset.count = visitors;
-      }
+      // Hero 统计：文章数 / 标签数 / 作者数实时计算；读者总数为虚拟数字（HTML 中固定）
+      const statArticles = document.getElementById('statArticles');
+      if (statArticles) statArticles.dataset.count = MOCK_DATA.articles.length;
+      const statTags = document.getElementById('statTags');
+      if (statTags) statTags.dataset.count = MOCK_DATA.tags.length;
+      const statAuthors = document.getElementById('statAuthors');
+      if (statAuthors) statAuthors.dataset.count = MOCK_DATA.authors.length;
 
       this.counterObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -408,7 +443,7 @@
           <button class="phone-modal__close" aria-label="关闭">
             <i data-lucide="x"></i>
           </button>
-          <img class="phone-modal__avatar" id="contactModalAvatar" src="" alt="">
+          <div class="phone-modal__avatar" id="contactModalAvatar"></div>
           <h3 class="phone-modal__name" id="contactModalName"></h3>
           <p class="phone-modal__role" id="contactModalRole"></p>
           <p class="phone-modal__label" id="contactModalLabel">联系电话</p>
@@ -486,11 +521,12 @@
     open(author, type) {
       const avatar = this.modal.querySelector('#contactModalAvatar');
       if (author.avatar) {
-        avatar.style.display = 'block';
-        avatar.src = author.avatar;
-        avatar.alt = author.name + '头像';
+        avatar.style.display = 'flex';
+        avatar.innerHTML = `<img src="${assetUrl(author.avatar)}" alt="${author.name}头像">`;
       } else {
-        avatar.style.display = 'none';
+        // 无专属头像：博客默认头像（名字首字）
+        avatar.style.display = 'flex';
+        avatar.textContent = (author.name || '未').charAt(0);
       }
 
       this.modal.querySelector('#contactModalName').textContent = author.name;
@@ -629,13 +665,31 @@
       const resultsEl = document.getElementById('searchResults');
       if (!headerEl || !resultsEl) return;
 
-      const backLink = `<a href="index.html" class="article-back">
+      const backLink = `<a href="${BASE}" class="article-back">
             <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12,19 5,12 12,5"></polyline></svg>
             返回首页
           </a>`;
 
+      this.secretHit = null;
+
+      // [ARG 线索] 隐藏关键词：普通搜索无结果，但会掉出一封"不是文章的文章"
+      if (q && q.trim() && ARG_SECRETS[q.trim()]) {
+        const keyword = q.trim();
+        const secret = ARG_SECRETS[keyword];
+        this.secretHit = secret;
+        this.filteredResults = [];
+        argProgress({ stage: 2, keywordFound: keyword });
+        document.title = `…… · Pro博客`;
+
+        this.headerHTML = `${backLink}
+          <span class="search-page__label">无结果？</span>
+          <h1 class="search-page__title">无文章、无标签关于「${utils.escapeHtml ? utils.escapeHtml(keyword) : keyword}」</h1>
+          <p class="search-page__subtitle">
+            空心人会调整躯体，让其趋近于它的内心。
+          </p>`;
+      }
       // 关键字搜索（优先级低于 author/tag/category 精准匹配入口，但高于空搜索）
-      if (q && q.trim()) {
+      else if (q && q.trim()) {
         const keyword = q.trim();
         this.filteredResults = this.fuzzySearch(keyword);
         document.title = `搜索：${keyword} · Pro博客`;
@@ -705,11 +759,44 @@
 
       headerEl.innerHTML = this.headerHTML;
 
+      // [ARG 线索] 隐藏关键词命中：只渲染一张秘密卡片，点击进入未被链接的信页
+      if (this.secretHit) {
+        const s = this.secretHit;
+        resultsEl.innerHTML = `
+          <article class="article-card arg-flash-card" id="argLetterCard" style="cursor:pointer;">
+            <div class="article-card__cover">
+              <img src="${assetUrl(s.cover)}" alt="${s.title}" loading="lazy">
+            </div>
+            <div class="article-card__body">
+              <span class="article-card__tag" style="background:var(--color-bg-muted);color:var(--color-text-muted);">未收录</span>
+              <h3 class="article-card__title"></h3>
+              <p class="article-card__excerpt"></p>
+              <div class="article-card__meta">
+                <span style="font-size:13px;color:var(--color-text-muted);font-family:var(--font-ui);">没有作者 · 没有日期 · 点击拆开这封信</span>
+              </div>
+            </div>
+          </article>`;
+        const card = document.getElementById('argLetterCard');
+        if (card) card.addEventListener('click', () => { window.location.href = s.href; });
+        // 可见性由 .arg-flash-card 的信号闯入动画独占控制（不用 card-reveal），
+        // opacity:0 时仍可点击——玩家在闪现间隙点那个位置也能拆开信
+        // [ARG] 每次显形结束后随机下一周期长度（3.2~7.7s），让信号闯入时机不可预测
+        try {
+          if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            card.addEventListener('animationiteration', (e) => {
+              if (e.animationName !== 'arg-ghost-visible') return;
+              card.style.setProperty('--arg-period', (3.2 + Math.random() * 4.5).toFixed(2) + 's');
+            });
+          }
+        } catch (e2) { }
+        return;
+      }
+
       if (this.filteredResults.length === 0) {
         resultsEl.innerHTML = `
           <div style="text-align:center;padding:80px 0;color:var(--color-text-muted);font-family:var(--font-ui);">
             <p style="font-size:16px;margin-bottom:var(--space-2);">没有找到匹配的文章</p>
-            <a href="index.html" class="btn btn--ghost" style="margin-top:var(--space-4);display:inline-flex;">浏览全部文章</a>
+            <a href="${BASE}" class="btn btn--ghost" style="margin-top:var(--space-4);display:inline-flex;">浏览全部文章</a>
           </div>`;
         return;
       }
@@ -724,7 +811,7 @@
                 <div class="author-card__cover"></div>
                 <div class="search-author-card__inner">
                   <div class="author-card__avatar-link" style="pointer-events:none;">
-                    <img class="author-card__avatar" src="${authorObj.avatar}" alt="${authorObj.name}头像">
+                    ${utils.avatarHtml(authorObj, 'author-card__avatar')}
                   </div>
                   <div class="search-author-card__info">
                     <h3 class="author-card__name" style="margin:0 0 var(--space-2);text-align:left;">${authorObj.name}</h3>
@@ -732,7 +819,7 @@
                     <p class="author-card__bio" style="text-align:left;">${authorObj.bio}</p>
                     <div class="author-card__socials" style="justify-content:flex-start;">
                       <a href="javascript:void(0)" class="author-phone-btn" data-author-id="${authorObj.id}" aria-label="电话"><i data-lucide="phone"></i></a>
-                      <a href="message.html?author=${encodeURIComponent(authorObj.name)}" aria-label="给${authorObj.name}留言"><i data-lucide="message-circle"></i></a>
+                      <a href="${BASE}message/?author=${encodeURIComponent(authorObj.name)}" aria-label="给${authorObj.name}留言"><i data-lucide="message-circle"></i></a>
                       <a href="javascript:void(0)" class="author-email-btn" data-author-id="${authorObj.id}" aria-label="邮箱"><i data-lucide="mail"></i></a>
                     </div>
                   </div>
@@ -746,26 +833,29 @@
       const start = this.currentPage * this.perPage;
       const pageItems = this.filteredResults.slice(start, start + this.perPage);
 
-      resultsEl.innerHTML = authorCardHTML + pageItems.map((article, idx) => `
+      resultsEl.innerHTML = authorCardHTML + pageItems.map((article, idx) => {
+        const resultAuthor = utils.getAuthor(article.authorId);
+        return `
           <article class="article-card card-reveal" data-id="${article.id}" style="transition-delay:${idx * 60}ms; cursor: pointer;">
             <div class="article-card__cover">
-              <img src="${article.cover}" alt="${article.title}" loading="lazy">
+              <img src="${assetUrl(article.cover)}" alt="${article.title}" loading="lazy">
             </div>
             <div class="article-card__body">
               <span class="article-card__tag">${article.categoryName}</span>
               <h3 class="article-card__title">${article.title}</h3>
               <p class="article-card__excerpt">${article.excerpt}</p>
               <div class="article-card__meta">
-                <a href="search.html?author=${encodeURIComponent(utils.getAuthor(article.authorId).name)}" class="article-card__author" onclick="event.stopPropagation()">
-                  <img src="${utils.getAuthor(article.authorId).avatar}" alt="${utils.getAuthor(article.authorId).name}">
-                  <span>${utils.getAuthor(article.authorId).name}</span>
+                <a href="${BASE}search/?author=${encodeURIComponent(resultAuthor.name)}" class="article-card__author" onclick="event.stopPropagation()">
+                  ${utils.avatarHtml(resultAuthor)}
+                  <span>${resultAuthor.name}</span>
                 </a>
                 <span class="article-card__dot article-card__dot--spacer"></span>
                 <time datetime="${article.date}">${utils.formatDate(article.date)}</time>
               </div>
             </div>
           </article>
-        `).join('');
+        `;
+      }).join('');
 
       // 分页器
       if (totalPages > 1) {
@@ -775,7 +865,7 @@
       // 绑定卡片跳转
       resultsEl.querySelectorAll('.article-card').forEach(card => {
         card.addEventListener('click', () => {
-          window.location.href = `article.html?id=${card.dataset.id}`;
+          window.location.href = `${BASE}article/?id=${card.dataset.id}`;
         });
       });
 
@@ -838,7 +928,7 @@
           <div class="article-notfound">
             <h1 class="article-notfound__title">文章未找到</h1>
             <p class="article-notfound__text">抱歉，您访问的文章不存在或已被移除。</p>
-            <a href="index.html" class="btn btn--primary">返回首页</a>
+            <a href="${BASE}" class="btn btn--primary">返回首页</a>
           </div>`;
         document.title = '文章未找到 · Pro博客';
         return;
@@ -847,22 +937,22 @@
       document.title = `${article.title} · Pro博客`;
 
       container.innerHTML = `
-        <a href="index.html" class="article-back">
+        <a href="${BASE}" class="article-back">
           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12,19 5,12 12,5"></polyline></svg>
           返回文章列表
         </a>
         <span class="article-page__tag">${article.categoryName}</span>
         <h1 class="article-page__title">${article.title}</h1>
         <div class="article-page__meta">
-          <a href="search.html?author=${encodeURIComponent(utils.getAuthor(article.authorId).name)}" class="article-card__author">
-            <img src="${utils.getAuthor(article.authorId).avatar}" alt="${utils.getAuthor(article.authorId).name}">
+          <a href="${BASE}search/?author=${encodeURIComponent(utils.getAuthor(article.authorId).name)}" class="article-card__author">
+            ${utils.avatarHtml(utils.getAuthor(article.authorId))}
             <span>${utils.getAuthor(article.authorId).name}</span>
           </a>
           <span class="article-card__dot article-card__dot--spacer"></span>
           <time datetime="${article.date}">${utils.formatDate(article.date)}</time>
         </div>
         <div class="article-page__cover">
-          <img src="${article.cover}" alt="${article.title}">
+          <img src="${assetUrl(article.cover)}" alt="${article.title}">
         </div>
         <div class="article-page__body">
           ${article.content.map(block => {
@@ -875,10 +965,17 @@
         </div>
         <div class="article-page__footer">
           <div class="article-page__tags">
-            ${article.tags.map(t => `<a class="article-page__tag-item" href="search.html?tag=${encodeURIComponent(t)}">#${t}</a>`).join('')}
+            ${article.tags.map(t => `<a class="article-page__tag-item" href="${BASE}search/?tag=${encodeURIComponent(t)}">#${t}</a>`).join('')}
           </div>
-          <a href="index.html" class="btn btn--ghost">返回首页</a>
+          <a href="${BASE}" class="btn btn--ghost">返回首页</a>
         </div>`;
+
+      // [ARG 线索] 第七封信：控制台留言（线索 L2，只在文章 id=7 出现）
+      if (article.id === 7) {
+        argProgress({ stage: 1, consoleFound: true });
+        console.log('%c你听见了这行字。', 'font-size:18px;font-weight:600;color:#666;');
+        console.log('%c有一封信，没有被放进任何列表、任何分类、任何标签里。\n它不在目录中，也不在链接中。\n\n想找到它：去"搜索"，在搜索框里输入下面这串字——\n\n    722转32\n\n然后回车。它会认出你的。', 'font-size:13px;line-height:2;color:#888;');
+      }
 
       window.scrollTo(0, 0);
     }
@@ -900,8 +997,8 @@
       ArticlePage.init();
     } else if (document.getElementById('messagePage') || document.getElementById('aboutPage')
       || document.getElementById('griefPage') || document.getElementById('depressionPage')
-      || document.getElementById('psychologyPage')) {
-      // 留言页、关于页和三个专题页：不需要文章渲染和订阅模块
+      || document.getElementById('forumPage') || document.getElementById('letterPage')) {
+      // 留言页、关于页、两个专题页、讨论区页和隐藏信页：不需要首页文章渲染和订阅模块
     } else {
       Renderer.init();
       Newsletter.init();
@@ -932,6 +1029,18 @@
     const style = document.createElement('style');
     style.textContent = `@keyframes spin{to{transform:rotate(360deg)}}`;
     document.head.appendChild(style);
+
+    // [ARG] 浏览器前进/后退缓存（bfcache）恢复页面时，CSS 无限动画可能冻结在最后一帧。
+    // 对秘密卡片：移除类 → 强制重排 → 加回类，让闪烁动画从头播放。
+    window.addEventListener('pageshow', (e) => {
+      if (!e.persisted) return;
+      const card = document.getElementById('argLetterCard');
+      if (card) {
+        card.classList.remove('arg-flash-card');
+        void card.offsetWidth; // 重置动画时钟
+        card.classList.add('arg-flash-card');
+      }
+    });
   }
 
   if (document.readyState === 'loading') {

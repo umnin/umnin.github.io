@@ -2124,10 +2124,26 @@ input {
   width: 64px;
   height: 64px;
   border-radius: var(--radius-full);
-  object-fit: cover;
   border: 2px solid var(--color-border);
   margin: 0 auto var(--space-4);
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  /* 默认头像（无头像图时显示名字首字） */
+  background: var(--color-bg-muted);
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 26px;
+  user-select: none;
+}
+
+.phone-modal__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
 }
 
 .phone-modal__name {
@@ -2185,4 +2201,345 @@ input {
 .phone-modal__copy i {
   width: 15px;
   height: 15px;
+}
+
+/* ============================================
+   [ARG] 隐藏线索卡片：平时不可见，
+   每隔几秒"信号闯入"一次——硬切出现、急促
+   反色频闪、剧烈抖动、扫描黑条撕裂、标题重影，
+   随后信号中断、硬切消失。
+   全部走合成属性（opacity/filter/transform），
+   不触发布局；周期长度由 --arg-period 控制，
+   JS 每次迭代随机改写，显形时机不可预测。
+   ============================================ */
+
+/* 显形窗口：约 16%~34%（硬切，20ms 插值近似跳变） */
+@keyframes arg-ghost-visible {
+
+  0%,
+  15.8% {
+    opacity: 0;
+  }
+
+  16.2%,
+  33.5% {
+    opacity: 1;
+  }
+
+  34%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 反色急促频闪：窗口内不规则连闪 4 下 */
+@keyframes arg-invert-flash {
+
+  0%,
+  15.8% {
+    filter: none;
+  }
+
+  16.4%,
+  18% {
+    filter: invert(1);
+  }
+
+  18.2%,
+  19.6% {
+    filter: none;
+  }
+
+  20%,
+  21.6% {
+    filter: invert(1);
+  }
+
+  21.8%,
+  23.4% {
+    filter: none;
+  }
+
+  24%,
+  26.2% {
+    filter: invert(1);
+  }
+
+  26.4%,
+  28.4% {
+    filter: none;
+  }
+
+  29.2%,
+  30.4% {
+    filter: invert(1);
+  }
+
+  30.6%,
+  100% {
+    filter: none;
+  }
+}
+
+/* 信号抖动：窗口内逐帧位移 + 偶尔跳动缩放，窗口外纹丝不动 */
+@keyframes arg-glitch-shake {
+
+  0%,
+  15.8%,
+  34%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+
+  16.6% {
+    transform: translate(-2px, 1px);
+  }
+
+  17.4% {
+    transform: translate(3px, -1px) scale(1.01);
+  }
+
+  18.2% {
+    transform: translate(-3px, 0);
+  }
+
+  19% {
+    transform: translate(1px, 2px);
+  }
+
+  19.8% {
+    transform: translate(-1px, -2px);
+  }
+
+  20.6% {
+    transform: translate(3px, 1px);
+  }
+
+  21.4% {
+    transform: translate(-2px, -1px) scale(1.015);
+  }
+
+  22.2% {
+    transform: translate(0, 2px);
+  }
+
+  23% {
+    transform: translate(2px, 0);
+  }
+
+  23.8% {
+    transform: translate(-3px, 1px);
+  }
+
+  24.6% {
+    transform: translate(1px, -1px);
+  }
+
+  25.4% {
+    transform: translate(-1px, 0) scale(0.995);
+  }
+
+  26.2% {
+    transform: translate(2px, -2px);
+  }
+
+  27% {
+    transform: translate(-2px, 1px);
+  }
+
+  27.8% {
+    transform: translate(1px, 0);
+  }
+
+  28.6% {
+    transform: translate(0, -1px);
+  }
+
+  29.4% {
+    transform: translate(-2px, -1px) scale(1.01);
+  }
+
+  30.4% {
+    transform: translate(1px, 1px);
+  }
+
+  31.5% {
+    transform: translate(-1px, 0);
+  }
+
+  33% {
+    transform: translate(0, 0) scale(1);
+  }
+}
+
+/* 扫描撕裂黑条（伪元素）：窗口内上下乱窜，反色时变为白条 */
+@keyframes arg-scanline {
+
+  0%,
+  15.8% {
+    opacity: 0;
+    top: 8%;
+  }
+
+  16.8% {
+    opacity: 0.7;
+    top: 18%;
+    height: 5px;
+  }
+
+  18.5% {
+    opacity: 0.25;
+    top: 42%;
+    height: 3px;
+  }
+
+  20.5% {
+    opacity: 0.85;
+    top: 58%;
+    height: 9px;
+  }
+
+  23% {
+    opacity: 0.4;
+    top: 28%;
+    height: 4px;
+  }
+
+  25.5% {
+    opacity: 0.7;
+    top: 72%;
+    height: 7px;
+  }
+
+  28% {
+    opacity: 0.3;
+    top: 50%;
+    height: 3px;
+  }
+
+  30.5% {
+    opacity: 0.6;
+    top: 82%;
+    height: 6px;
+  }
+
+  33%,
+  100% {
+    opacity: 0;
+    top: 92%;
+  }
+}
+
+/* 标题错位重影 */
+@keyframes arg-text-ghost {
+
+  0%,
+  15.8%,
+  34%,
+  100% {
+    text-shadow: none;
+  }
+
+  19% {
+    text-shadow: 2px 0 0 var(--color-border-strong);
+  }
+
+  23% {
+    text-shadow: -2px 0 0 var(--color-border-strong);
+  }
+
+  27% {
+    text-shadow: 1px 1px 0 var(--color-border-strong);
+  }
+
+  31% {
+    text-shadow: none;
+  }
+}
+
+.arg-flash-card {
+  --arg-period: 5s;
+  /* 基准态隐藏；动画未启动时卡片不可见 */
+  opacity: 0;
+  position: relative;
+  overflow: hidden;
+  /* 延迟 0.8s：等页面加载后第一次信号闯入，之后周期由 JS 随机改写 */
+  animation:
+    arg-ghost-visible var(--arg-period) steps(1, end) 0.8s infinite,
+    arg-invert-flash var(--arg-period) linear 0.8s infinite,
+    arg-glitch-shake var(--arg-period) linear 0.8s infinite;
+}
+
+/* 扫描撕裂条：随卡片反色一起变色（黑条 ↔ 白条） */
+.arg-flash-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  background: var(--color-text);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+  animation: arg-scanline var(--arg-period) linear 0.8s infinite;
+}
+
+.arg-flash-card .article-card__title {
+  animation: arg-text-ghost var(--arg-period) linear 0.8s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arg-flash-card {
+    /* 无动画环境：卡片常驻可见，保证可访问性 */
+    animation: none;
+    opacity: 1;
+  }
+
+  .arg-flash-card::before,
+  .arg-flash-card .article-card__title {
+    animation: none;
+  }
+}
+
+/* ============================================
+   博客默认头像：无专属头像图的作者，
+   显示名字第一个字的灰底圆角块
+   ============================================ */
+.default-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-muted);
+  color: var(--color-text-muted);
+  font-family: var(--font-display);
+  font-weight: 700;
+  border-radius: var(--radius-full);
+  flex-shrink: 0;
+  user-select: none;
+  line-height: 1;
+}
+
+/* 文章卡片 meta 内：28px，与 img 头像尺寸一致 */
+.article-card__author .default-avatar {
+  width: 28px;
+  height: 28px;
+  font-size: 13px;
+  border: 1px solid var(--color-border);
+}
+
+/* 文章页 meta 内：32px */
+.article-page__meta .article-card__author .default-avatar {
+  width: 32px;
+  height: 32px;
+  font-size: 15px;
+}
+
+/* 作者卡（关于页/侧边栏/搜索作者卡）：复用 .author-card__avatar 的尺寸、
+   圆形、边框与压封面定位，只补文字视觉 */
+.author-card__avatar.default-avatar {
+  font-size: 30px;
+  background: var(--color-bg-muted);
+}
+
+.search-author-card__inner .author-card__avatar.default-avatar {
+  font-size: 36px;
 }

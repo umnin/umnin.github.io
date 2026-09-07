@@ -8,6 +8,13 @@
 (function () {
   'use strict';
 
+  // 路径前缀：子目录页面通过内联脚本注入 window.ASSET_BASE='../'，根目录页面为 ''
+  var BASE = window.ASSET_BASE || '';
+  function assetUrl(p) {
+    if (!p || /^(https?:)?\/\//.test(p)) return p;
+    return BASE + p;
+  }
+
   function getAuthors() {
     if (typeof ARTICLES_DATA !== 'undefined' && Array.isArray(ARTICLES_DATA.authors)) {
       return ARTICLES_DATA.authors;
@@ -67,12 +74,14 @@
         return (
           '<button type="button" class="author-picker__item' + (selected ? ' author-picker__item--selected' : '') + '" ' +
           'data-author="' + this.escapeHtml(a.name) + '">' +
-            '<img src="' + a.avatar + '" alt="' + this.escapeHtml(a.name) + '">' +
-            '<div class="author-picker__item-info">' +
-              '<span class="author-picker__item-name">' + this.escapeHtml(a.name) + '</span>' +
-              '<span class="author-picker__item-role">' + this.escapeHtml(a.title || '') + '</span>' +
-            '</div>' +
-            (selected ? '<i data-lucide="check-circle-2" class="author-picker__check"></i>' : '') +
+          (a.avatar
+            ? '<img src="' + assetUrl(a.avatar) + '" alt="' + this.escapeHtml(a.name) + '">'
+            : '<span class="default-avatar">' + this.escapeHtml(a.name.charAt(0)) + '</span>') +
+          '<div class="author-picker__item-info">' +
+          '<span class="author-picker__item-name">' + this.escapeHtml(a.name) + '</span>' +
+          '<span class="author-picker__item-role">' + this.escapeHtml(a.title || '') + '</span>' +
+          '</div>' +
+          (selected ? '<i data-lucide="check-circle-2" class="author-picker__check"></i>' : '') +
           '</button>'
         );
       }.bind(this)).join('');
@@ -116,8 +125,8 @@
       if (this.messages.length === 0) {
         container.innerHTML =
           '<div class="message-empty">' +
-            '<i data-lucide="inbox"></i>' +
-            '<p>还没有留言记录，写一条试试吧～</p>' +
+          '<i data-lucide="inbox"></i>' +
+          '<p>还没有留言记录，写一条试试吧～</p>' +
           '</div>';
         this.refreshIcons();
         return;
@@ -135,28 +144,31 @@
 
         return (
           '<article class="message-item' + (isToAuthor ? ' message-item--to-author' : '') + '" data-id="' + msg.id + '">' +
-            (isToAuthor
-              ? '<div class="message-item__target">' +
-                  '<i data-lucide="user-round"></i>' +
-                  '<span>致：</span>' +
-                  (authorObj
-                    ? '<img src="' + authorObj.avatar + '" alt="' + this.escapeHtml(authorObj.name) + '"><span class="message-item__target-name">' + this.escapeHtml(authorObj.name) + '</span>'
-                    : '<span class="message-item__target-name">' + this.escapeHtml(msg.targetAuthor) + '</span>') +
-                '</div>'
-              : '') +
-            '<div class="message-item__header">' +
-              '<div class="message-item__user">' +
-                '<div class="message-item__avatar">' + this.escapeHtml(msg.nickname).slice(0, 1) + '</div>' +
-                '<div class="message-item__meta">' +
-                  '<span class="message-item__nickname">' + this.escapeHtml(msg.nickname) + '</span>' +
-                  '<span class="message-item__time">' + dateStr + '</span>' +
-                '</div>' +
-              '</div>' +
-              '<button type="button" class="message-item__delete" data-delete="' + msg.id + '" aria-label="删除">' +
-                '<i data-lucide="trash-2"></i>' +
-              '</button>' +
-            '</div>' +
-            '<p class="message-item__content">' + this.escapeHtml(msg.content) + '</p>' +
+          (isToAuthor
+            ? '<div class="message-item__target">' +
+            '<i data-lucide="user-round"></i>' +
+            '<span>致：</span>' +
+            (authorObj
+              ? (authorObj.avatar
+                ? '<img src="' + assetUrl(authorObj.avatar) + '" alt="' + this.escapeHtml(authorObj.name) + '">'
+                : '<span class="default-avatar">' + this.escapeHtml(authorObj.name.charAt(0)) + '</span>')
+              + '<span class="message-item__target-name">' + this.escapeHtml(authorObj.name) + '</span>'
+              : '<span class="message-item__target-name">' + this.escapeHtml(msg.targetAuthor) + '</span>') +
+            '</div>'
+            : '') +
+          '<div class="message-item__header">' +
+          '<div class="message-item__user">' +
+          '<div class="message-item__avatar">' + this.escapeHtml(msg.nickname).slice(0, 1) + '</div>' +
+          '<div class="message-item__meta">' +
+          '<span class="message-item__nickname">' + this.escapeHtml(msg.nickname) + '</span>' +
+          '<span class="message-item__time">' + dateStr + '</span>' +
+          '</div>' +
+          '</div>' +
+          '<button type="button" class="message-item__delete" data-delete="' + msg.id + '" aria-label="删除">' +
+          '<i data-lucide="trash-2"></i>' +
+          '</button>' +
+          '</div>' +
+          '<p class="message-item__content">' + this.escapeHtml(msg.content) + '</p>' +
           '</article>'
         );
       }.bind(this)).join('');
@@ -167,12 +179,12 @@
     refreshIcons() {
       try {
         const _w = console.warn;
-        console.warn = function () {};
+        console.warn = function () { };
         if (window.lucide && typeof window.lucide.createIcons === 'function') {
           window.lucide.createIcons();
         }
         console.warn = _w;
-      } catch (e) {}
+      } catch (e) { }
     },
 
     /* ================ 事件绑定 ================ */

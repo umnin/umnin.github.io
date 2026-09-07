@@ -1,0 +1,417 @@
+/* ========== 读者讨论区样式 ==========
+   设计 token 全部复用 style.css：
+   灰阶色板 / --space-* / --radius-* / --font-* / .btn
+   不引入任何新的颜色体系；点赞激活态使用语义色 --color-danger
+*/
+
+/* ---- 发表讨论卡片 ---- */
+.forum-postbox {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  margin-bottom: var(--space-12);
+}
+
+.forum-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.forum-form__row {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: var(--space-4);
+}
+
+.forum-input,
+.forum-textarea {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.6;
+  box-sizing: border-box;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.forum-input::placeholder,
+.forum-textarea::placeholder {
+  color: var(--color-text-muted);
+}
+
+.forum-input:focus,
+.forum-textarea:focus {
+  outline: none;
+  border-color: var(--color-text-muted);
+}
+
+.forum-textarea {
+  resize: vertical;
+  min-height: 96px;
+}
+
+.forum-textarea--sm {
+  min-height: 0;
+}
+
+.forum-form__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+.forum-form__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.forum-form__hint i {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* ---- 讨论列表 ---- */
+.forum-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* ---- 帖子卡片（与 .message-item 同一视觉规范） ---- */
+.forum-post {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  transition: border-color var(--transition-base);
+}
+
+.forum-post:hover {
+  border-color: var(--color-border-strong);
+}
+
+.forum-post__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.forum-post__user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.forum-post__avatar,
+.forum-reply__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-bg-muted);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.forum-post__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.forum-post__name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.forum-post__time {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.forum-post__floor {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  background: var(--color-bg-muted);
+  border-radius: var(--radius-sm);
+  padding: 2px 8px;
+  flex-shrink: 0;
+}
+
+/* 博主徽章 */
+.forum-badge {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--color-on-primary);
+  background: var(--color-primary);
+  border-radius: var(--radius-sm);
+  padding: 3px 6px;
+  white-space: nowrap;
+}
+
+.forum-post__title {
+  font-family: var(--font-ui);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--color-text);
+  margin: 0 0 var(--space-3);
+}
+
+.forum-post__content {
+  margin: 0 0 var(--space-4);
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--color-text-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ---- 帖子操作条 ---- */
+.forum-post__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.forum-like,
+.forum-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.forum-like i,
+.forum-action-btn i {
+  width: 16px;
+  height: 16px;
+}
+
+.forum-like:hover,
+.forum-action-btn:hover {
+  background: var(--color-bg-muted);
+  color: var(--color-text);
+}
+
+.forum-action-btn {
+  margin-left: auto;
+}
+
+/* 点赞激活态：语义红 */
+.forum-like--active,
+.forum-like--active:hover {
+  color: var(--color-danger);
+  background: transparent;
+}
+
+.forum-like--active:hover {
+  background: var(--color-danger-light);
+}
+
+/* ---- 回复区 ---- */
+.forum-replies-wrap {
+  margin-bottom: var(--space-4);
+}
+
+.forum-replies {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  background: var(--color-bg-muted);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-3);
+}
+
+.forum-reply {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.forum-reply__avatar {
+  width: 30px;
+  height: 30px;
+  font-size: 12px;
+  background: var(--color-bg-elevated);
+}
+
+.forum-reply__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.forum-reply__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: 2px;
+}
+
+.forum-reply__name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.forum-reply__time {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.forum-reply__content {
+  margin: 0 0 4px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.forum-like--sm {
+  padding: 2px 8px;
+  font-size: 12px;
+}
+
+/* ---- 回复表单 ---- */
+.forum-reply-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.forum-reply-form .forum-input {
+  max-width: 220px;
+}
+
+.forum-reply-form__row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.forum-reply-form__row .forum-textarea {
+  flex: 1;
+}
+
+.forum-reply-form .btn {
+  flex-shrink: 0;
+  padding: 10px 20px;
+}
+
+/* ---- Toast（与留言页 toast 同一视觉） ---- */
+.forum-toast {
+  position: fixed;
+  bottom: var(--space-8);
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--color-text);
+  color: var(--color-bg);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-md);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  opacity: 0;
+  transition: transform var(--transition-slow), opacity var(--transition-slow);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.forum-toast--show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+/* ---- 空状态 ---- */
+.forum-empty {
+  text-align: center;
+  padding: var(--space-12) var(--space-6);
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  font-size: 14px;
+}
+
+/* ========== 响应式（断点与全局一致） ========== */
+@media (max-width: 768px) {
+  .forum-postbox,
+  .forum-post {
+    padding: var(--space-5);
+  }
+
+  .forum-form__row {
+    grid-template-columns: 1fr;
+  }
+
+  .forum-form__footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .forum-form__footer .btn {
+    justify-content: center;
+  }
+
+  .forum-reply-form__row {
+    flex-direction: column;
+  }
+
+  .forum-reply-form .forum-input {
+    max-width: none;
+  }
+
+  .forum-reply-form .btn {
+    align-self: flex-end;
+  }
+
+  .forum-post__title {
+    font-size: 16px;
+  }
+}

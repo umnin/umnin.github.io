@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>留言板 · Pro博客</title>
+    <meta name="description" content="Pro博客留言板 - 留下你的声音">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../message.css">
+</head>
+
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="navbar" id="navbar">
+        <div class="navbar__container">
+            <a href="../" class="navbar__logo">
+                <span class="navbar__logo-mark">P</span>
+                <span class="navbar__logo-text">ro博客</span>
+            </a>
+
+            <nav class="navbar__menu" id="navMenu">
+                <a href="../" class="navbar__link">首页</a>
+                <a href="../grief/" class="navbar__link">悲伤疗愈</a>
+                <a href="../depression/" class="navbar__link">抑郁认知</a>
+                <a href="../forum/" class="navbar__link">讨论区</a>
+                <a href="../message/" class="navbar__link navbar__link--active">留言</a>
+                <a href="../about/" class="navbar__link">关于</a>
+            </nav>
+
+            <div class="navbar__actions">
+                <div class="search-box" id="searchBox">
+                    <button class="search-box__trigger" id="searchTrigger" aria-label="搜索">
+                        <i data-lucide="search"></i>
+                    </button>
+                    <input type="text" class="search-box__input" id="searchInput" placeholder="搜索文章...">
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                    <i data-lucide="moon" class="theme-toggle__icon--light"></i>
+                    <i data-lucide="sun" class="theme-toggle__icon--dark"></i>
+                </button>
+                <button class="navbar__hamburger" id="hamburger" aria-label="菜单">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 留言页主体 -->
+    <main class="message-page" id="messagePage">
+        <div class="message-page__container">
+            <!-- 页面标题 -->
+            <div class="message-page__header">
+                <h1 class="message-page__title">留言板</h1>
+                <p class="message-page__subtitle">留下你的声音，与我们交流你的想法</p>
+            </div>
+
+            <!-- 留言类型切换 -->
+            <div class="message-tabs" id="messageTabs">
+                <button class="message-tabs__btn message-tabs__btn--active" data-tab="normal" type="button">
+                    <i data-lucide="message-square"></i>
+                    <span>普通留言</span>
+                </button>
+                <button class="message-tabs__btn" data-tab="author" type="button">
+                    <i data-lucide="user-round"></i>
+                    <span>向作者留言</span>
+                </button>
+            </div>
+
+            <!-- 留言表单 -->
+            <section class="message-form-section">
+                <h2 class="message-section__title">
+                    <i data-lucide="pen-line"></i>
+                    <span id="formSectionTitle">写下你的留言</span>
+                </h2>
+
+                <!-- 作者选择（仅"向作者留言"时显示） -->
+                <div class="author-picker" id="authorPicker" hidden>
+                    <div class="author-picker__label">
+                        <i data-lucide="at-sign"></i>
+                        <span>选择要留言的作者：</span>
+                    </div>
+                    <div class="author-picker__list" id="authorPickerList">
+                        <!-- 作者卡片由 JS 动态注入 -->
+                    </div>
+                </div>
+
+                <form class="message-form" id="messageForm">
+                    <div class="message-form__row">
+                        <div class="message-form__group">
+                            <label for="nickname">昵称 *</label>
+                            <input type="text" id="nickname" name="nickname" placeholder="请输入你的昵称" required
+                                maxlength="20">
+                        </div>
+                        <div class="message-form__group">
+                            <label for="email">邮箱</label>
+                            <input type="email" id="email" name="email" placeholder="选填，不会公开" maxlength="50">
+                        </div>
+                    </div>
+                    <div class="message-form__group">
+                        <label for="content"><span id="contentLabel">留言内容</span> *</label>
+                        <textarea id="content" name="content" placeholder="请输入你的留言内容..." required maxlength="500"
+                            rows="5"></textarea>
+                        <span class="message-form__counter"><span id="charCount">0</span> / 500</span>
+                    </div>
+                    <button type="submit" class="btn btn--primary message-form__submit">
+                        <i data-lucide="send"></i>
+                        <span id="submitBtnText">发表留言</span>
+                    </button>
+                </form>
+            </section>
+
+            <!-- 我的留言列表 -->
+            <section class="message-list-section" style="margin-top: var(--space-12);">
+                <h2 class="message-section__title">
+                    <i data-lucide="scroll-text"></i>
+                    我的留言记录
+                </h2>
+                <div id="messageListContainer" class="message-list">
+                    <!-- 留言列表由 JS 动态注入 -->
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="footer__grid">
+                <div class="footer__brand">
+                    <a href="../" class="footer__logo">
+                        <span class="footer__logo-mark">P</span>
+                        <span class="footer__logo-text">ro博客</span>
+                    </a>
+                    <p class="footer__slogan">专业与灵感的交汇，分享有价值的内容。</p>
+                    <div class="footer__socials">
+                        <a href="tel:72232"><i data-lucide="phone"></i></a>
+                        <a href="../message/"><i data-lucide="message-circle"></i></a>
+                        <a href="mailto:S_WILL@problog"><i data-lucide="mail"></i></a>
+                        <a href="#"><i data-lucide="rss"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer__col">
+                    <h5 class="footer__heading">快速导航</h5>
+                    <ul class="footer__links">
+                        <li><a href="../">首页</a></li>
+                        <li><a href="../grief/">悲伤疗愈</a></li>
+                        <li><a href="../depression/">抑郁认知</a></li>
+                        <li><a href="../forum/">讨论区</a></li>
+                        <li><a href="../about/">关于我们</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer__col">
+                    <h5 class="footer__heading">热门专题</h5>
+                    <ul class="footer__links">
+                        <li><a href="../search/?tag=丧亲">丧亲哀伤辅导</a></li>
+                        <li><a href="../search/?tag=抑郁症">抑郁症认知</a></li>
+                        <li><a href="../search/?tag=悲伤五阶段">悲伤五阶段</a></li>
+                        <li><a href="../search/?tag=正念">正念与疗愈</a></li>
+                        <li><a href="../search/?tag=存在主义">存在主义心理</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer__col">
+                    <h5 class="footer__heading">联系方式</h5>
+                    <ul class="footer__links footer__contact">
+                        <li><i data-lucide="mail"></i> S_WILL@problog</li>
+                        <li><i data-lucide="map-pin"></i> 莱茵·边城</li>
+                        <li><i data-lucide="clock"></i> 每周六更新</li>
+                        <li><i data-lucide="send"></i> 722转32</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer__bottom">
+                <p>© 2026 Pro博客. All rights reserved.</p>
+                <div class="footer__legal">
+                    <a href="#">隐私政策</a>
+                    <a href="#">使用条款</a>
+                    <a href="#">RSS 订阅</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>window.ASSET_BASE='../';</script>
+    <script src="../articles.js" defer></script>
+    <script src="../script.js" defer></script>
+    <script src="../message.js" defer></script>
+</body>
+
+</html>

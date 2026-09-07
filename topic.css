@@ -177,6 +177,13 @@
   color: var(--color-text);
 }
 
+/* 文章列表：与首页 / 搜索结果页一致的纵向堆叠 + 卡片间隙 */
+.articles-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
 /* ========== 响应式（与全局 style.css 断点同步） ========== */
 @media (max-width: 1024px) {
   .topic-page__container {
