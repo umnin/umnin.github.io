@@ -11,8 +11,8 @@
             if (__theme) document.documentElement.setAttribute('data-theme', __theme);
         } catch (e) { }
     </script>
-    <title>留言板 · Pro博客</title>
-    <meta name="description" content="Pro博客留言板 - 留下你的声音">
+    <title>使用条款 · Pro博客</title>
+    <meta name="description" content="Pro博客 使用条款 — 使用本网站的相关约定">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -20,7 +20,7 @@
         rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <link rel="stylesheet" href="../style.css?v=20260924">
-    <link rel="stylesheet" href="../message.css">
+    <link rel="stylesheet" href="../legal.css">
 </head>
 
 <body>
@@ -31,16 +31,14 @@
                 <span class="navbar__logo-mark">P</span>
                 <span class="navbar__logo-text">ro博客</span>
             </a>
-
             <nav class="navbar__menu" id="navMenu">
                 <a href="../" class="navbar__link">首页</a>
                 <a href="../grief/" class="navbar__link">悲伤疗愈</a>
                 <a href="../depression/" class="navbar__link">抑郁认知</a>
                 <a href="../forum/" class="navbar__link">讨论区</a>
-                <a href="../message/" class="navbar__link navbar__link--active">留言</a>
+                <a href="../message/" class="navbar__link">留言</a>
                 <a href="../about/" class="navbar__link">关于</a>
             </nav>
-
             <div class="navbar__actions">
                 <div class="search-box" id="searchBox">
                     <button class="search-box__trigger" id="searchTrigger" aria-label="搜索">
@@ -59,81 +57,105 @@
         </div>
     </header>
 
-    <!-- 留言页主体 -->
-    <main class="message-page" id="messagePage">
-        <div class="message-page__container">
-            <!-- 页面标题 -->
-            <div class="message-page__header">
-                <h1 class="message-page__title">留言板</h1>
-                <p class="message-page__subtitle">留下你的声音，与我们交流你的想法</p>
+    <!-- 主体 -->
+    <main class="legal-page" id="termsPage">
+        <div class="legal-page__container">
+            <div class="legal-hero">
+                <span class="legal-hero__eyebrow">法律信息</span>
+                <h1 class="legal-hero__title">使用条款</h1>
+                <p class="legal-hero__subtitle">
+                    使用本网站即表示你同意以下条款。请仔细阅读。
+                </p>
             </div>
 
-            <!-- 留言类型切换 -->
-            <div class="message-tabs" id="messageTabs">
-                <button class="message-tabs__btn message-tabs__btn--active" data-tab="normal" type="button">
-                    <i data-lucide="message-square"></i>
-                    <span>普通留言</span>
-                </button>
-                <button class="message-tabs__btn" data-tab="author" type="button">
-                    <i data-lucide="user-round"></i>
-                    <span>向作者留言</span>
-                </button>
-            </div>
-
-            <!-- 留言表单 -->
-            <section class="message-form-section">
-                <h2 class="message-section__title">
-                    <i data-lucide="pen-line"></i>
-                    <span id="formSectionTitle">写下你的留言</span>
-                </h2>
-
-                <!-- 作者选择（仅"向作者留言"时显示） -->
-                <div class="author-picker" id="authorPicker" hidden>
-                    <div class="author-picker__label">
-                        <i data-lucide="at-sign"></i>
-                        <span>选择要留言的作者：</span>
-                    </div>
-                    <div class="author-picker__list" id="authorPickerList">
-                        <!-- 作者卡片由 JS 动态注入 -->
-                    </div>
+            <section class="legal-section">
+                <div class="legal-section__header">
+                    <h2 class="legal-section__title">
+                        <i data-lucide="file-text"></i>
+                        服务说明
+                    </h2>
                 </div>
-
-                <form class="message-form" id="messageForm">
-                    <div class="message-form__row">
-                        <div class="message-form__group">
-                            <label for="nickname">昵称 *</label>
-                            <input type="text" id="nickname" name="nickname" placeholder="请输入你的昵称" required
-                                maxlength="20">
-                        </div>
-                        <div class="message-form__group">
-                            <label for="email">邮箱</label>
-                            <input type="email" id="email" name="email" placeholder="选填，不会公开" maxlength="50">
-                        </div>
-                    </div>
-                    <div class="message-form__group">
-                        <label for="content"><span id="contentLabel">留言内容</span> *</label>
-                        <textarea id="content" name="content" placeholder="请输入你的留言内容..." required maxlength="500"
-                            rows="5"></textarea>
-                        <span class="message-form__counter"><span id="charCount">0</span> / 500</span>
-                    </div>
-                    <button type="submit" class="btn btn--primary message-form__submit">
-                        <i data-lucide="send"></i>
-                        <span id="submitBtnText">发表留言</span>
-                    </button>
-                </form>
-            </section>
-
-            <!-- 我的留言列表 -->
-            <section class="message-list-section" style="margin-top: var(--space-12);">
-                <h2 class="message-section__title">
-                    <i data-lucide="scroll-text"></i>
-                    我的留言记录
-                </h2>
-                <div id="messageListContainer" class="message-list">
-                    <!-- 留言列表由 JS 动态注入 -->
+                <div class="legal-section__content">
+                    <p>Pro博客 是一个专注于丧亲哀伤与抑郁心理学的<strong>纯静态内容网站</strong>，提供文章阅读、讨论区和留言板功能。我们不提供心理咨询、诊断或治疗服务。</p>
+                    <p>本站文章内容基于作者个人经验和心理学知识，<strong>不构成专业医疗建议</strong>。如果你正在经历心理危机，请寻求专业帮助或拨打当地心理危机干预热线。</p>
                 </div>
             </section>
 
+            <section class="legal-section">
+                <div class="legal-section__header">
+                    <h2 class="legal-section__title">
+                        <i data-lucide="pen-line"></i>
+                        内容版权
+                    </h2>
+                </div>
+                <div class="legal-section__content">
+                    <p>本站所有文章版权归原作者所有。未经授权，不得：</p>
+                    <ul>
+                        <li>将文章内容用于商业用途</li>
+                        <li>去除或修改文章的作者署名</li>
+                        <li>以原文形式在其他平台发布</li>
+                    </ul>
+                    <p>欢迎在注明出处的前提下，分享文章链接或摘录部分内容用于非商业用途。</p>
+                </div>
+            </section>
+
+            <section class="legal-section">
+                <div class="legal-section__header">
+                    <h2 class="legal-section__title">
+                        <i data-lucide="users"></i>
+                        用户行为规范
+                    </h2>
+                </div>
+                <div class="legal-section__content">
+                    <p>使用讨论区和留言板时，请遵守以下规范：</p>
+                    <ul>
+                        <li><strong>尊重他人</strong>：不发布人身攻击、歧视性或仇恨言论</li>
+                        <li><strong>保护隐私</strong>：不公开他人或自己的敏感个人信息</li>
+                        <li><strong>内容真实</strong>：不发布虚假信息或误导性内容</li>
+                        <li><strong>禁止商业推广</strong>：不发布广告、推广链接或垃圾信息</li>
+                        <li><strong>版权尊重</strong>：不发布侵犯他人版权的内容</li>
+                    </ul>
+                    <p>由于讨论区和留言板数据存储在各用户的浏览器本地，我们无法删除他人发布的内容。如遇不当内容，请联系我们处理。</p>
+                </div>
+            </section>
+
+            <section class="legal-section">
+                <div class="legal-section__header">
+                    <h2 class="legal-section__title">
+                        <i data-lucide="heart-handshake"></i>
+                        免责声明
+                    </h2>
+                </div>
+                <div class="legal-section__content">
+                    <p>本站内容按"现状"提供，不附带任何明示或暗示的保证。我们不对以下情况负责：</p>
+                    <ul>
+                        <li>因第三方服务（Google Fonts、CDN）导致的隐私泄露</li>
+                        <li>因浏览器 localStorage 清除导致的数据丢失</li>
+                        <li>因网络原因导致的页面加载失败</li>
+                        <li>因文章内容导致的任何直接或间接损失</li>
+                    </ul>
+                    <p>如果你对文章内容有不同理解，欢迎通过讨论区或留言板进行建设性讨论。</p>
+                </div>
+            </section>
+
+            <section class="legal-section">
+                <div class="legal-section__header">
+                    <h2 class="legal-section__title">
+                        <i data-lucide="refresh-cw"></i>
+                        条款更新
+                    </h2>
+                </div>
+                <div class="legal-section__content">
+                    <p>本条款可能随网站功能调整而更新。继续使用本网站即视为你接受更新后的条款。</p>
+                    <p>最后更新：2026 年 9 月 7 日</p>
+                </div>
+            </section>
+
+            <div class="legal-info">
+                <p class="legal-info__text">
+                    Pro博客 由边城孤儿院与教会志愿者共同维护，不以盈利为目的。我们写作，不是为了给出答案，而是为了陪伴你走过那段没有答案的日子。
+                </p>
+            </div>
         </div>
     </main>
 
@@ -154,7 +176,6 @@
                         <a href="../rss/"><i data-lucide="rss"></i></a>
                     </div>
                 </div>
-
                 <div class="footer__col">
                     <h5 class="footer__heading">快速导航</h5>
                     <ul class="footer__links">
@@ -165,7 +186,6 @@
                         <li><a href="../about/">关于我们</a></li>
                     </ul>
                 </div>
-
                 <div class="footer__col">
                     <h5 class="footer__heading">热门专题</h5>
                     <ul class="footer__links">
@@ -176,7 +196,6 @@
                         <li><a href="../search/?tag=存在主义">存在主义心理</a></li>
                     </ul>
                 </div>
-
                 <div class="footer__col">
                     <h5 class="footer__heading">联系方式</h5>
                     <ul class="footer__links footer__contact">
@@ -187,7 +206,6 @@
                     </ul>
                 </div>
             </div>
-
             <div class="footer__bottom">
                 <p>© 2026 Pro博客. All rights reserved.</p>
                 <div class="footer__legal">
@@ -202,7 +220,6 @@
     <script>window.ASSET_BASE = '../';</script>
     <script src="../articles.js?v=20260924" defer></script>
     <script src="../script.js?v=20260924c" defer></script>
-    <script src="../message.js" defer></script>
 </body>
 
 </html>

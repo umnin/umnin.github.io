@@ -16,7 +16,7 @@
 
   // [ARG 线索] 搜索页隐藏关键词：不在任何文章里出现，搜中后返回一张"不存在的文章"卡片
   const ARG_SECRETS = {
-    '722转32': {
+    '722-32': {
       title: '给读得很慢的人',
       excerpt: '这不是一篇文章。它没有作者署名，没有日期，也不在任何分类里。如果你在搜索结果里看见了它——说明有人一直在等你。',
       cover: 'image/bg_huochezhan.png',
@@ -171,6 +171,14 @@
       const triggerSearch = () => {
         const keyword = DOM.searchInput.value.trim();
         if (!keyword) return false;
+        // 输入纯数字且存在对应文章 ID → 直接进入该文章
+        if (/^\d+$/.test(keyword)) {
+          const article = MOCK_DATA.articles.find(a => a.id === Number(keyword));
+          if (article) {
+            window.location.href = `${BASE}article/?id=${article.id}`;
+            return true;
+          }
+        }
         window.location.href = `${BASE}search/?q=${encodeURIComponent(keyword)}`;
         return true;
       };
@@ -271,7 +279,8 @@
     },
 
     renderArticles() {
-      const data = MOCK_DATA.articles.filter(a => a.featured);
+      if (!DOM.articlesList) return;
+      const data = MOCK_DATA.articles.filter(a => a.featured && !a.hidden);
 
       if (data.length === 0) {
         DOM.articlesList.innerHTML = `
@@ -322,9 +331,11 @@
     },
 
     renderCategories() {
+      if (!DOM.categoryList) return;
       // 从实际文章中聚合分类，保证分类名与文章 categoryName 一致
       const catMap = new Map();
       MOCK_DATA.articles.forEach(a => {
+        if (a.hidden) return;
         const name = a.categoryName || '未分类';
         catMap.set(name, (catMap.get(name) || 0) + 1);
       });
@@ -345,6 +356,7 @@
     },
 
     renderTags() {
+      if (!DOM.tagCloud) return;
       DOM.tagCloud.innerHTML = MOCK_DATA.tags.map(tag => `
         <a class="tag-cloud__tag tag-cloud__tag--${tag.size}" href="${BASE}search/?tag=${encodeURIComponent(tag.name)}">${tag.name}</a>
       `).join('');
@@ -388,7 +400,7 @@
     initCounterObserver() {
       // Hero 统计：文章数 / 标签数 / 作者数实时计算；读者总数为虚拟数字（HTML 中固定）
       const statArticles = document.getElementById('statArticles');
-      if (statArticles) statArticles.dataset.count = MOCK_DATA.articles.length;
+      if (statArticles) statArticles.dataset.count = MOCK_DATA.articles.filter(a => !a.hidden).length;
       const statTags = document.getElementById('statTags');
       if (statTags) statTags.dataset.count = MOCK_DATA.tags.length;
       const statAuthors = document.getElementById('statAuthors');
@@ -491,7 +503,7 @@
       document.addEventListener('click', (e) => {
         const phoneBtn = e.target.closest('.author-phone-btn');
         const emailBtn = e.target.closest('.author-email-btn');
-        const footerPhone = e.target.closest('.footer__socials a[href^="tel:"]');
+        const footerPhone = e.target.closest('.footer__socials a[href^="tel:"], .about-contact__value[href^="tel:"]');
         const footerEmail = e.target.closest('.footer__socials a[href^="mailto:"]');
 
         if (phoneBtn) {
@@ -566,10 +578,219 @@
   };
 
   // ============================================
+  //  管理员密码校验：SHA-256 哈希后再做凯撒位移
+  //  （字母后移 7 位，数字加 1，均循环），代码中不出现明文也不出现裸哈希
+  //  明文答案：创始人名字拼音（b 开头），由玩家自行推出
+  // ============================================
+  const ADMIN_PASSWORD_OBF = '4j88m372h267h6419mll64831387406lm89k3l8478l5336h4k4k04m5hjjk2kk4';
+
+  async function sha256Hex(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf), function (b) {
+      return b.toString(16).padStart(2, '0');
+    }).join('');
+  }
+
+  /* 凯撒位移：a-z 后移 7 位，0-9 加 1，均循环 */
+  function caesarShift(hex) {
+    return hex.replace(/[a-z0-9]/g, function (c) {
+      if (c >= '0' && c <= '9') return String((Number(c) + 1) % 10);
+      return String.fromCharCode((c.charCodeAt(0) - 97 + 7) % 26 + 97);
+    });
+  }
+
+  async function verifyAdminPassword(input) {
+    const val = (input || '').trim().toLowerCase();
+    if (!val || !window.crypto || !crypto.subtle) return false;
+    try {
+      return caesarShift(await sha256Hex(val)) === ADMIN_PASSWORD_OBF;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // ============================================
+  //  加密文章解密：AES-256-GCM
+  //  用管理员密码经 PBKDF2 派生密钥，解密 articles.js 中的 contentCipher
+  //  bundle 结构（base64）：IV(12) + authTag(16) + ciphertext
+  //  加密参数需与 _encrypt_article.js 完全一致
+  // ============================================
+  const PBKDF2_SALT = 'problog-2026-biancheng';
+  const PBKDF2_ITERATIONS = 100000;
+  const AES_IV_LEN = 12;
+  const AES_TAG_LEN = 16;
+
+  function base64ToBytes(b64) {
+    const bin = atob(b64);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return bytes;
+  }
+
+  async function decryptArticleContent(password, cipherBundle) {
+    if (!password || !cipherBundle || !window.crypto || !crypto.subtle) return null;
+    try {
+      const bundle = base64ToBytes(cipherBundle);
+      const iv = bundle.slice(0, AES_IV_LEN);
+      const tag = bundle.slice(AES_IV_LEN, AES_IV_LEN + AES_TAG_LEN);
+      const ciphertext = bundle.slice(AES_IV_LEN + AES_TAG_LEN);
+
+      // 拼接 ciphertext + authTag（Web Crypto GCM 要求 tag 附在密文末尾）
+      const ctWithTag = new Uint8Array(ciphertext.length + tag.length);
+      ctWithTag.set(ciphertext, 0);
+      ctWithTag.set(tag, ciphertext.length);
+
+      // 导入密码为 PBKDF2 密钥材料
+      const keyMaterial = await crypto.subtle.importKey(
+        'raw',
+        new TextEncoder().encode(password),
+        { name: 'PBKDF2' },
+        false,
+        ['deriveKey']
+      );
+
+      // PBKDF2 派生 AES-256 密钥
+      const aesKey = await crypto.subtle.deriveKey(
+        {
+          name: 'PBKDF2',
+          salt: new TextEncoder().encode(PBKDF2_SALT),
+          iterations: PBKDF2_ITERATIONS,
+          hash: 'SHA-256'
+        },
+        keyMaterial,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['decrypt']
+      );
+
+      // AES-GCM 解密
+      const plain = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: iv },
+        aesKey,
+        ctWithTag
+      );
+
+      const text = new TextDecoder().decode(plain);
+      return JSON.parse(text);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // ============================================
+  //  管理员入口彩蛋：3 秒内连点主题切换按钮 7 次
+  //  → 弹出登录框（账号：页脚邮箱前缀 / 密码：创始人的名字拼音）
+  //  → 验证通过写入 sessionStorage 并跳转后台页 /admin/
+  // ============================================
+  const AdminLogin = {
+    ADMIN_USER: 's_will',
+    CLICK_WINDOW: 3000,
+    CLICK_TARGET: 7,
+    clicks: [],
+    modal: null,
+
+    init() {
+      if (!DOM.themeToggle) return;
+      // 主题切换照常进行；这里只做连击计数
+      DOM.themeToggle.addEventListener('click', () => this.registerClick());
+    },
+
+    registerClick() {
+      const now = Date.now();
+      // 滑动窗口：只保留最近 3 秒内的点击
+      this.clicks = this.clicks.filter(t => now - t < this.CLICK_WINDOW);
+      this.clicks.push(now);
+      if (this.clicks.length >= this.CLICK_TARGET) {
+        this.clicks = [];
+        this.open();
+      }
+    },
+
+    open() {
+      if (!this.modal) this.build();
+      this.modal.classList.add('admin-modal--open');
+      const user = this.modal.querySelector('#adminUserInput');
+      const input = this.modal.querySelector('#adminPasswordInput');
+      const err = this.modal.querySelector('#adminModalError');
+      user.value = '';
+      input.value = '';
+      err.textContent = '';
+      setTimeout(() => user.focus(), 200);
+    },
+
+    close() {
+      if (this.modal) this.modal.classList.remove('admin-modal--open');
+    },
+
+    async attempt() {
+      const user = this.modal.querySelector('#adminUserInput');
+      const input = this.modal.querySelector('#adminPasswordInput');
+      const err = this.modal.querySelector('#adminModalError');
+      const card = this.modal.querySelector('.admin-modal__card');
+      const okUser = user.value.trim().toLowerCase() === this.ADMIN_USER;
+      const okPass = await verifyAdminPassword(input.value);
+      if (okUser && okPass) {
+        try { sessionStorage.setItem('problog_admin', '1'); } catch (e) { }
+        window.location.href = `${BASE}admin/`;
+      } else {
+        err.textContent = '账号或密码错误';
+        // 重启动摇动画
+        card.classList.remove('admin-modal__card--shake');
+        void card.offsetWidth;
+        card.classList.add('admin-modal__card--shake');
+      }
+    },
+
+    build() {
+      this.modal = document.createElement('div');
+      this.modal.className = 'admin-modal';
+      this.modal.innerHTML = `
+        <div class="admin-modal__card">
+          <button class="admin-modal__close" aria-label="关闭">
+            <i data-lucide="x"></i>
+          </button>
+          <h3 class="admin-modal__title">管理员登录</h3>
+          <form class="admin-modal__form" id="adminModalForm">
+            <input type="text" class="admin-modal__input" id="adminUserInput"
+                   placeholder="账号" autocomplete="username" spellcheck="false">
+            <input type="password" class="admin-modal__input" id="adminPasswordInput"
+                   placeholder="密码" autocomplete="current-password">
+            <p class="admin-modal__error" id="adminModalError" role="alert"></p>
+            <button type="submit" class="admin-modal__btn">登录</button>
+          </form>
+        </div>`;
+      document.body.appendChild(this.modal);
+
+      this.modal.querySelector('.admin-modal__close').addEventListener('click', () => this.close());
+      this.modal.addEventListener('click', (e) => {
+        if (e.target === this.modal) this.close();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.modal.classList.contains('admin-modal--open')) this.close();
+      });
+      this.modal.querySelector('#adminModalForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        this.attempt();
+      });
+
+      if (window.lucide) {
+        try {
+          const origWarn = console.warn;
+          console.warn = function () { };
+          lucide.createIcons();
+          console.warn = origWarn;
+        } catch (e) { }
+      }
+    }
+  };
+
+  // ============================================
   //  邮件订阅模块
   // ============================================
   const Newsletter = {
     init() {
+      // 隐私政策/使用条款/RSS 等静态页没有订阅表单，跳过以避免空引用错误中断后续图标初始化
+      if (!DOM.newsletterForm) return;
       DOM.newsletterForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const input = $('.newsletter__input', DOM.newsletterForm);
@@ -610,6 +831,7 @@
 
       const scored = [];
       MOCK_DATA.articles.forEach(article => {
+        if (article.hidden) return;  // 加密文章不参与关键字搜索
         let score = 0;
         const authorObj = utils.getAuthor(article.authorId);
 
@@ -691,6 +913,14 @@
       // 关键字搜索（优先级低于 author/tag/category 精准匹配入口，但高于空搜索）
       else if (q && q.trim()) {
         const keyword = q.trim();
+        // 纯数字且命中文章 ID → 直接跳转文章页
+        if (/^\d+$/.test(keyword)) {
+          const article = MOCK_DATA.articles.find(a => a.id === Number(keyword));
+          if (article) {
+            window.location.replace(`${BASE}article/?id=${article.id}`);
+            return;
+          }
+        }
         this.filteredResults = this.fuzzySearch(keyword);
         document.title = `搜索：${keyword} · Pro博客`;
 
@@ -704,7 +934,7 @@
       }
       // 作者筛选模式
       else if (author) {
-        this.filteredResults = MOCK_DATA.articles.filter(a => utils.getAuthor(a.authorId).name === author);
+        this.filteredResults = MOCK_DATA.articles.filter(a => !a.hidden && utils.getAuthor(a.authorId).name === author);
         document.title = `作者：${author} · Pro博客`;
 
         this.headerHTML = `${backLink}
@@ -714,7 +944,7 @@
             共找到 <strong>${this.filteredResults.length}</strong> 篇由「${author}」撰写的文章
           </p>`;
       } else if (tag) {
-        this.filteredResults = MOCK_DATA.articles.filter(a => a.tags.includes(tag));
+        this.filteredResults = MOCK_DATA.articles.filter(a => !a.hidden && a.tags.includes(tag));
         document.title = `标签：${tag} · Pro博客`;
 
         this.headerHTML = `${backLink}
@@ -724,7 +954,7 @@
             共找到 <strong>${this.filteredResults.length}</strong> 篇与「${tag}」相关的文章
           </p>`;
       } else if (category) {
-        this.filteredResults = MOCK_DATA.articles.filter(a => a.categoryName === category);
+        this.filteredResults = MOCK_DATA.articles.filter(a => !a.hidden && a.categoryName === category);
         document.title = `${category} · Pro博客`;
 
         const categoryDescriptions = {
@@ -912,6 +1142,48 @@
   };
 
   // ============================================
+  //  [ARG] 伪造的 id=1 文章
+  //  仅当访客带着 GAD-7 最高分的一次性标记（problog_gad_fake）跳转而来时渲染。
+  //  元信息与真实 id=1 完全一致，正文却是被「替换」过的内容；
+  //  标记读取后立即销毁——刷新页面，文章恢复原样，无法复现。
+  //  正文以 AES-256-GCM 密文存储（密钥 = SHA-256(FAKE_KEY_SEED)），渲染前浏览器端解密。
+  //  bundle(base64)：IV(12) + authTag(16) + ciphertext
+  // ============================================
+  const FAKE_KEY_SEED = 'problog-2026-biancheng';
+  const FAKE_ARTICLE_1 = {
+    id: 1,
+    title: '当所爱之人离去：理解丧亲后的心理重建与哀伤过程',
+    cover: 'image/bg_abyss.png',
+    category: 'grief',
+    categoryName: '悲伤疗愈',
+    tags: ['丧亲', '哀伤反应', '心理重建'],
+    authorId: 1,
+    date: '2026-08-08',
+    contentCipher: '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'
+  };
+
+  /* 固定种子 SHA-256 派生 AES-256-GCM 密钥，解密自动渲染类密文（无需访客输入密码） */
+  async function decryptSeedBundle(seed, cipherBundle) {
+    if (!cipherBundle || !window.crypto || !crypto.subtle) return null;
+    try {
+      const rawKey = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(seed));
+      const key = await crypto.subtle.importKey('raw', rawKey, { name: 'AES-GCM' }, false, ['decrypt']);
+      const bundle = base64ToBytes(cipherBundle);
+      const iv = bundle.slice(0, AES_IV_LEN);
+      const tag = bundle.slice(AES_IV_LEN, AES_IV_LEN + AES_TAG_LEN);
+      const ct = bundle.slice(AES_IV_LEN + AES_TAG_LEN);
+      const ctWithTag = new Uint8Array(ct.length + tag.length);
+      ctWithTag.set(ct, 0);
+      ctWithTag.set(tag, ct.length);
+      const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ctWithTag);
+      const list = JSON.parse(new TextDecoder().decode(plain));
+      return Array.isArray(list) ? list : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // ============================================
   //  文章详情页
   // ============================================
   const ArticlePage = {
@@ -924,16 +1196,95 @@
       if (!container) return;
 
       if (!article) {
-        container.innerHTML = `
+        this.renderNotFound(container);
+        return;
+      }
+
+      // [ARG] GAD-7 最高分跳转：带一次性标记访问 id=1 时，渲染被替换的伪造文章。
+      // 标记在密文成功解密后才销毁——刷新或再次访问都将看到真实文章。
+      if (id === 1) {
+        let fake = false;
+        try { fake = sessionStorage.getItem('problog_gad_fake') === '1'; } catch (e) { }
+        if (fake) {
+          this.renderFakeArticle(article, container);
+          return;
+        }
+      }
+
+      // 加密文章：每次进入都必须输入管理员密码，不记忆、不放行
+      if (article.protected) {
+        this.renderGate(article, container);
+        return;
+      }
+
+      this.renderArticle(article, container);
+    },
+
+    /* [ARG] 解密伪造文章正文并渲染；解密失败则静默回落到真实文章。一次性标记随之销毁。 */
+    async renderFakeArticle(realArticle, container) {
+      const blocks = await decryptSeedBundle(FAKE_KEY_SEED, FAKE_ARTICLE_1.contentCipher);
+      try { sessionStorage.removeItem('problog_gad_fake'); } catch (e) { }
+      if (blocks && blocks.length) {
+        this.renderArticle(Object.assign({}, FAKE_ARTICLE_1, { content: blocks }), container);
+      } else {
+        this.renderArticle(realArticle, container);
+      }
+    },
+
+    renderNotFound(container) {
+      container.innerHTML = `
           <div class="article-notfound">
             <h1 class="article-notfound__title">文章未找到</h1>
             <p class="article-notfound__text">抱歉，您访问的文章不存在或已被移除。</p>
             <a href="${BASE}" class="btn btn--primary">返回首页</a>
           </div>`;
-        document.title = '文章未找到 · Pro博客';
-        return;
-      }
+      document.title = '文章未找到 · Pro博客';
+    },
 
+    renderGate(article, container) {
+      document.title = '受保护的文章 · Pro博客';
+      container.innerHTML = `
+        <div class="article-gate">
+          <div class="article-gate__icon"><i data-lucide="lock"></i></div>
+          <h1 class="article-gate__title">这篇文章被加密了</h1>
+          <p class="article-gate__desc">它没有被放进任何列表、任何分类、任何标签里。<br>能找到这里的人，请输入 S_WILL 的管理员密码。</p>
+          <form class="article-gate__form" id="articleGateForm">
+            <input type="password" class="article-gate__input" id="articleGateInput" placeholder="管理员密码" autocomplete="current-password" required>
+            <button type="submit" class="btn btn--primary article-gate__submit">进入</button>
+          </form>
+          <p class="article-gate__error" id="articleGateError"></p>
+        </div>`;
+      if (window.lucide) { try { lucide.createIcons(); } catch (e) { } }
+      const input = container.querySelector('#articleGateInput');
+      setTimeout(() => input.focus(), 100);
+
+      container.querySelector('#articleGateForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const err = container.querySelector('#articleGateError');
+        const gate = container.querySelector('.article-gate');
+        const submit = container.querySelector('.article-gate__submit');
+        submit.disabled = true;
+        const ok = await verifyAdminPassword(input.value);
+        if (ok) {
+          // 密码通过后，用同一密码解密加密存储的 content
+          article.content = await decryptArticleContent(input.value, article.contentCipher);
+        }
+        submit.disabled = false;
+        if (ok && article.content) {
+          this.renderArticle(article, container);
+        } else {
+          err.textContent = '密码错误';
+          gate.classList.remove('article-gate--shake');
+          void gate.offsetWidth;
+          gate.classList.add('article-gate--shake');
+          input.select();
+        }
+      });
+
+      window.scrollTo(0, 0);
+    },
+
+    renderArticle(article, container) {
       document.title = `${article.title} · Pro博客`;
 
       container.innerHTML = `
@@ -974,7 +1325,7 @@
       if (article.id === 7) {
         argProgress({ stage: 1, consoleFound: true });
         console.log('%c你听见了这行字。', 'font-size:18px;font-weight:600;color:#666;');
-        console.log('%c有一封信，没有被放进任何列表、任何分类、任何标签里。\n它不在目录中，也不在链接中。\n\n想找到它：去"搜索"，在搜索框里输入下面这串字——\n\n    722转32\n\n然后回车。它会认出你的。', 'font-size:13px;line-height:2;color:#888;');
+        console.log('%c有一封信，没有被放进任何列表、任何分类、任何标签里。\n它不在目录中，也不在链接中。\n\n想找到它：去"搜索"，在搜索框里输入下面这串字——\n\n    722-32\n\n然后回车。它会认出你的。', 'font-size:13px;line-height:2;color:#888;');
       }
 
       window.scrollTo(0, 0);
@@ -989,6 +1340,7 @@
     UI.init();
     Animations.init();
     ContactModal.init();
+    AdminLogin.init();
 
     // 根据页面类型初始化不同模块
     if (document.getElementById('searchPage')) {
@@ -1009,16 +1361,19 @@
       try {
         const origWarn = console.warn;
         console.warn = function () { };
-        lucide.createIcons();
+        window.lucide.createIcons();
         console.warn = origWarn;
       } catch (e) { }
     };
     if (window.lucide) {
       createIconsSilently();
+      // 延迟一帧再跑一次，确保所有 defer 内联脚本（如 RSS 页）注入的 DOM 也被处理
+      requestAnimationFrame(() => createIconsSilently());
     } else {
       const retry = setInterval(() => {
         if (window.lucide) {
           createIconsSilently();
+          requestAnimationFrame(() => createIconsSilently());
           clearInterval(retry);
         }
       }, 200);

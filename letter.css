@@ -84,3 +84,60 @@
     padding: var(--space-5);
   }
 }
+
+/* [ARG] 右下角声音开关：不抢眼的灰阶小圆钮 */
+.letter-audio-btn {
+  position: fixed;
+  right: var(--space-6);
+  bottom: var(--space-6);
+  z-index: 50;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-elevated);
+  color: var(--color-text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity var(--transition-fast), color var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.letter-audio-btn:hover {
+  opacity: 1;
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+}
+
+.letter-audio-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* 播放中显示"有声"图标，暂停/未播放显示"静音"图标 */
+.letter-audio-btn__icon--on {
+  display: none;
+}
+
+.letter-audio-btn.is-playing {
+  opacity: 0.9;
+  color: var(--color-text);
+}
+
+.letter-audio-btn.is-playing .letter-audio-btn__icon--on {
+  display: block;
+}
+
+.letter-audio-btn.is-playing .letter-audio-btn__icon--off {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .letter-audio-btn {
+    right: var(--space-4);
+    bottom: var(--space-4);
+  }
+}

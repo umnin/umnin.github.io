@@ -4,6 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        /* 尽早应用已保存的主题，避免页面加载时明暗闪烁 */
+        try {
+            var __theme = localStorage.getItem('problog-theme');
+            if (__theme) document.documentElement.setAttribute('data-theme', __theme);
+        } catch (e) { }
+    </script>
     <title>给读得很慢的人 · Pro博客</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,7 +18,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap"
         rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../style.css?v=20260924">
     <link rel="stylesheet" href="../topic.css">
     <link rel="stylesheet" href="../letter.css">
 </head>
@@ -98,7 +105,7 @@
                         <a href="tel:72232"><i data-lucide="phone"></i></a>
                         <a href="../message/"><i data-lucide="message-circle"></i></a>
                         <a href="mailto:S_WILL@problog"><i data-lucide="mail"></i></a>
-                        <a href="#"><i data-lucide="rss"></i></a>
+                        <a href="../rss/"><i data-lucide="rss"></i></a>
                     </div>
                 </div>
 
@@ -128,9 +135,9 @@
                     <h5 class="footer__heading">联系方式</h5>
                     <ul class="footer__links footer__contact">
                         <li><i data-lucide="mail"></i> S_WILL@problog</li>
-                        <li><i data-lucide="map-pin"></i> 莱茵·边城</li>
+                        <li><i data-lucide="map-pin"></i> 边城</li>
                         <li><i data-lucide="clock"></i> 每周六更新</li>
-                        <li><i data-lucide="send"></i> 722转32</li>
+                        <li><i data-lucide="send"></i> 722-32</li>
                     </ul>
                 </div>
             </div>
@@ -138,9 +145,9 @@
             <div class="footer__bottom">
                 <p>© 2026 Pro博客. All rights reserved.</p>
                 <div class="footer__legal">
-                    <a href="#">隐私政策</a>
-                    <a href="#">使用条款</a>
-                    <a href="#">RSS 订阅</a>
+                    <a href="../privacy/">隐私政策</a>
+                    <a href="../terms/">使用条款</a>
+                    <a href="../rss/">RSS 订阅</a>
                 </div>
             </div>
         </div>
@@ -175,9 +182,58 @@
             } catch (e) { }
         })();
     </script>
+    <!-- [ARG] 这一页的声音：浏览器允许时自动播放，被拦截则在首次点击/按键后响起 -->
+    <audio id="letterAudio" src="../sound/thisIsGame.mp3" preload="auto"></audio>
+    <button type="button" class="letter-audio-btn" id="letterAudioBtn" aria-label="声音开关">
+        <i data-lucide="volume-2" class="letter-audio-btn__icon letter-audio-btn__icon--on"></i>
+        <i data-lucide="volume-x" class="letter-audio-btn__icon letter-audio-btn__icon--off"></i>
+    </button>
+    <script>
+        (function () {
+            try {
+                var audio = document.getElementById('letterAudio');
+                var btn = document.getElementById('letterAudioBtn');
+                if (!audio || !btn) return;
+
+                audio.volume = 0.5;  // 音量减半
+
+                audio.addEventListener('play', function () { btn.classList.add('is-playing'); });
+                audio.addEventListener('pause', function () { btn.classList.remove('is-playing'); });
+                audio.addEventListener('ended', function () { btn.classList.remove('is-playing'); });
+
+                function attemptPlay() {
+                    var p = audio.play();
+                    if (p && typeof p.catch === 'function') p.catch(function () { /* 等首次交互 */ });
+                }
+                attemptPlay();
+
+                /* 自动播放被拦截：首次点击或按键时响起（只挂一次） */
+                function onFirstGesture() {
+                    if (audio.paused) attemptPlay();
+                    document.removeEventListener('click', onFirstGesture);
+                    document.removeEventListener('keydown', onFirstGesture);
+                    document.removeEventListener('touchstart', onFirstGesture);
+                }
+                document.addEventListener('click', onFirstGesture);
+                document.addEventListener('keydown', onFirstGesture);
+                document.addEventListener('touchstart', onFirstGesture);
+
+                /* 右下角开关：播放中点击 → 停止并回到开头；未播放时点击 → 播放 */
+                btn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    if (audio.paused) {
+                        attemptPlay();
+                    } else {
+                        audio.pause();
+                        audio.currentTime = 0;
+                    }
+                });
+            } catch (e) { }
+        })();
+    </script>
     <script>window.ASSET_BASE = '../';</script>
-    <script src="../articles.js" defer></script>
-    <script src="../script.js" defer></script>
+    <script src="../articles.js?v=20260924" defer></script>
+    <script src="../script.js?v=20260924c" defer></script>
 </body>
 
 </html>

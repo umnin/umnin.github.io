@@ -27,7 +27,8 @@
     const container = document.getElementById('aboutTeam');
     if (!container || typeof ARTICLES_DATA === 'undefined') return;
 
-    const authors = ARTICLES_DATA.authors;
+    // 仅展示团队成员（articles.js 中带 team: true 标记的作者）；投稿读者不在此列
+    const authors = ARTICLES_DATA.authors.filter(author => author.team);
     container.innerHTML = authors.map(author => `
       <div class="about-author-card">
         <div class="author-card__cover"></div>

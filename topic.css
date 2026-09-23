@@ -184,6 +184,88 @@
   gap: var(--space-6);
 }
 
+/* ---- 问卷入口卡片 ---- */
+.survey-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-6);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8) var(--space-6);
+  text-decoration: none;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.survey-card:hover {
+  border-color: var(--color-border-strong);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.survey-card__icon {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg-muted);
+  border-radius: var(--radius-md);
+}
+
+.survey-card__icon i {
+  width: 24px;
+  height: 24px;
+  color: var(--color-text-secondary);
+}
+
+.survey-card__body {
+  flex: 1;
+  min-width: 0;
+}
+
+.survey-card__title {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--space-2);
+  line-height: 1.4;
+}
+
+.survey-card__desc {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-5);
+}
+
+.survey-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: 13px;
+  color: var(--color-text-muted);
+}
+
+.survey-card__meta span {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.survey-card__meta i {
+  width: 14px;
+  height: 14px;
+}
+
+.survey-card__cta {
+  margin-left: auto;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
 /* ========== 响应式（与全局 style.css 断点同步） ========== */
 @media (max-width: 1024px) {
   .topic-page__container {

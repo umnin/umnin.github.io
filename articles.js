@@ -12,7 +12,8 @@ const ARTICLES_DATA = {
       phone: '722326',
       email: 'S_WILL@problog',
       title: '边城孤儿院院长 · PRO博客创始人之一',
-      bio: '专注于丧亲哀伤与抑郁心理学领域，理解痛苦是走向疗愈的第一步。'
+      bio: '专注于丧亲哀伤与抑郁心理学领域，理解痛苦是走向疗愈的第一步。',
+      team: true
     },
     {
       id: 2,
@@ -21,7 +22,8 @@ const ARTICLES_DATA = {
       phone: '712472',
       email: 'noya@problog',
       title: '边城教会修女',
-      bio: '具有多年安抚和治疗哀伤经验，对丧亲后的心理重建有较为深入的理解。'
+      bio: '具有多年安抚和治疗哀伤经验，对丧亲后的心理重建有较为深入的理解。',
+      team: true
     },
     {
       id: 3,
@@ -30,7 +32,8 @@ const ARTICLES_DATA = {
       phone: '745174',
       email: 'bingyin@problog',
       title: '边城教会负责人',
-      bio: '具有多年的安抚经验，对多种心理问题有较为深入的研究。'
+      bio: '具有多年的安抚经验，对多种心理问题有较为深入的研究。',
+      team: true
     },
     {
       id: 4,
@@ -75,9 +78,9 @@ const ARTICLES_DATA = {
     name: 'Pro博客',
     phone: '722772',
     email: 'S_WILL@problog',
-    address: '莱茵·边城',
+    address: '边城',
     updateSchedule: '每周六更新',
-    telegram: '722转32'
+    telegram: '722-32'
   },
 
   articles: [
@@ -304,7 +307,7 @@ const ARTICLES_DATA = {
         { type: 'p', text: '我不知道这封信能否帮到你。但我希望你知道，在某个地方，有一个人在想着你，在为你祈祷，希望你能在自己的时间里，以自己的方式，慢慢找到属于你的平静。' },
         { type: 'p', text: '请善待自己。请相信，你正在经历的一切，都在某种方式上塑造着你。失去不会消失，但你会学会与它共处。' },
         { type: 'p', text: '且请带着温柔走向这个世界，拥抱你所经历的一切。' },
-        { type: 'p', text: 'P.S. 这是发出的第七封信。发出前我检查过正文，一切妥当——只是我总觉得，真正想寄的那一封并不在这些段落里，它像是落在了信的旁边，留给那些会停下来、多读一行的人。' }
+        { type: 'blockquote', text: '"那只是边城闹剧，独属于韦尔尼察的悲剧。" —— 西维尔。' },
       ]
     },
     {
@@ -542,7 +545,11 @@ const ARTICLES_DATA = {
         },
         { type: 'h2', text: '它对情绪有什么用' },
         { type: 'p', text: '规律练习能帮助人在情绪风暴和自己之间制造一点"空隙"——刺激和反应之间的那一点点空隙，正是自由所在。你依然会难过，但难过不再瞬间淹没你。' },
-        { type: 'p', text: '今天不妨试一次。三分钟，走神了也没关系——会走神，才说明你是个正常人；能回来，就是练习。' }
+        { type: 'p', text: '今天不妨试一次。三分钟，走神了也没关系——会走神，才说明你是个正常人；能回来，就是练习。' },
+        { type: 'h2', text: '其实也没那么有用' },
+        { type: 'p', text: '如果你一直闷在屋子里，你可能会发现，你没有改变任何事情。' },
+        { type: 'p', text: '出去走走吧，也许外面是阳光，也许在下着倾盆大雨，感受一点不一样的事物。' },
+        { type: 'p', text: '也许你就不会像西维尔一样，因自己而毁灭。' }
       ]
     },
     {
@@ -579,7 +586,7 @@ const ARTICLES_DATA = {
     {
       id: 16,
       title: '读者来信 | "我在搜索框里输入了一串数字"',
-      excerpt: '编者按：这封来信没有署名，投稿邮箱也查无此人。我们核查过，博客里并不存在这位读者描述的"文章"。但我们决定原样刊出——如果它说中了你的经历，留言板永远亮着灯。',
+      excerpt: '编者：这封来信没有署名，投稿邮箱也查无此人。我们核查过，博客里并不存在这位读者描述的"文章"。但我们决定原样刊出——如果它说中了你的经历。',
       cover: 'image/bg_huochezhan.png',
       category: 'psychology',
       categoryName: '心理学',
@@ -589,19 +596,19 @@ const ARTICLES_DATA = {
       readTime: 5,
       featured: false,
       content: [
-        { type: 'blockquote', text: '编者按：这封来信没有署名。我们的投稿系统里找不到它的发送记录，回信地址是空的。我们认真核查过：博客里并不存在这位读者描述的"文章"，搜索框输入那串数字，也只有"没有找到相关内容"。但我们决定原样刊出，一字未改。如果它说中了你的经历，留言板永远亮着灯。' },
+        { type: 'blockquote', text: '编者：这封来信没有署名。我们的投稿系统里找不到它的发送记录，回信地址是空的。我们认真核查过：博客里并不存在这位读者描述的"文章"，搜索框输入那串数字，也只有"没有找到相关内容"。但我们决定原样刊出，一字未改。如果它说中了你的经历。' },
         { type: 'p', text: '你好。我是一个程序员，平时不怎么看心理类的博客，是上周失眠的时候，被搜索引擎带到这里来的。' },
-        { type: 'p', text: '我读了那篇《写给丧亲者的信》——第七篇。文章最后有一段 P.S.，说有一封信"落在了信的旁边"。我也不知道为什么，职业病吧，我打开了网页源代码，然后又打开了控制台。' },
-        { type: 'p', text: '控制台里真的有留言。它让我去搜索一个号码，就是你们页脚里那个"722转32"。' },
-        { type: 'h2', text: '搜索结果页上，有一张卡片一闪而过' },
-        { type: 'p', text: '我搜了。页面明明白白写着没有相关文章。但是——我盯着屏幕看了几十秒，有一张卡片凭空闪了一下，像老电视换台时的雪花，反色、抖动，然后消失了。我以为是自己熬夜看花了眼。' },
-        { type: 'p', text: '过了几秒，它又闪了一下。这次我眼疾手快，点了上去。' },
-        { type: 'p', text: '那是一封信的页面。导航栏和你们的博客一模一样，但没有任何地方链接到它。信的署名是乱码，一团跳动的方块字符，每隔几秒，乱码里会跳出"诺夏"两个字，然后又糊掉。' },
-        { type: 'p', text: '信的最后说，让我点一下右上角的月亮。我切到了深色模式。' },
-        { type: 'p', text: '白天看不见的那一段字显示了出来。我读完了。结尾是四个字：无怨无悔。' },
+        { type: 'p', text: '我读了那篇《写给丧亲者的信》——第七篇。文章最后有一段 P.S.，说□□□□□□□□□□□□□□。我也不知道为什么，职业病吧，我打开了网页源代码，然后又打开了控制台。' },
+        { type: 'p', text: '控制台里真的有留言。□□□□□□□□□，页脚□□□□□□□□□。' },
+        { type: 'h2', text: '搜索结果页上，有一张卡片□□□□□□□□' },
+        { type: 'p', text: '我搜了。页面明明白白写着没有相关文章。但是——我盯着屏幕看了几十秒，有一张卡片□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□□。' },
+        { type: 'p', text: '过了几秒，它又□□□□。这次我眼疾手快，□□□□。' },
+        { type: 'p', text: '那是一封信的页面。导航栏和你们的博客□□□□□□□□，但没有任何地方链接到它。信的署名是乱码，一团跳动的方块字符，每隔几秒，乱码里会跳出□□□两个字，然后又糊掉。' },
+        { type: 'p', text: '信的最后说，让我点一下右上角的□□□□□□□□□□□□□□□□□。' },
+        { type: 'p', text: '白天看不见的那一段字显示了出来。我读完了。结尾是四个字：□□□□。' },
         { type: 'h2', text: '所以我写这封信来问' },
-        { type: 'p', text: '这是你们网站设计的彩蛋，对吗？如果是，我想说谢谢——我不太会讲自己的事，但那封信在凌晨三点接住了我。原来真的有人会为"会停下来、多读一行的人"专门写点什么。' },
-        { type: 'p', text: '如果不是设计的……那也没关系。边城的夜很长，有人留灯就好。' },
+        { type: 'p', text: '这是你们网站设计的□□□□□，对吗？如果是，我想说谢谢——我不太会讲自己的事，但那封信在凌晨三点□□□□□□□□□□□。原来真的有人会为"会停下来、□□□□□□□□□□"专门写点什么。' },
+        { type: 'p', text: '如果不是设计的……那也没关系。□□□□□□□□□□□□□□□□□□□□□□□□' },
         { type: 'p', text: '—— 一个读得很慢的人' },
         { type: 'blockquote', text: '编者后记：我们把这封信拿给技术的朋友看。他沉默了一会儿，说："也许每封信，都在等它的读者。"我们没有删改任何字。如果你也曾在搜索框里输入过那串数字、看见过一闪而过的卡片——请相信，你不是一个人。' }
       ]
@@ -710,13 +717,57 @@ const ARTICLES_DATA = {
         { type: 'blockquote', text: '呼吸不是让你逃避情绪，而是让你在情绪的大浪中，找到一块能站稳的石头。' },
         { type: 'p', text: '这个练习不需要正念基础，随时可用。它不会立刻改变你的处境，但会改变你和处境之间的关系——你不再是被动的反应者，而是一个主动的选择者。' }
       ]
+    },
+    {
+      // [加密文章] hidden：不出现在任何列表/搜索/统计/RSS/后台；protected：文章页需输入 S_WILL 的管理员密码
+      id: 21,
+      title: '边城闹剧',
+      excerpt: '以我的视角',
+      cover: 'image/bg_black.png',
+      category: 'psychology',
+      categoryName: '心理学',
+      tags: ['编者手记'],
+      authorId: 1,
+      date: '2026-09-06',
+      readTime: 5,
+      featured: false,
+      hidden: true,
+      protected: true,
+      // content 已用管理员密码（S_WILL 的管理员密码）经 AES-256-GCM 加密存储
+      contentCipher: "0H3jclKG+e++ByodyWjEhQxqF9QhQ+VTYv8/tOBzq9bwLhTG6OGabwyzD/XECpqkkKg6eGXp+Zc0123P1IUwBUncuelhgjt7PoG8CbvvWSXuqadWfOtmlzG8/DgfgeyJmmramA63xADYRjuno0rNAmUB3VC4Jj0XOo8xJlppUsDIbvn2JowCDAB4/yPI3ZnbGIhw2iX75q2Qa9hCK3+q8DcJnlcnKxDDKD2SqxtRpVi8/uWOEoEWj2X0nkeQpgRW+8y1vf6sM8ZCqJt1WDg6gwLPa438uAGVQsYVMXVl+9tSOnO6moUapoKXhG/8n/F3WQGqEh3MTPGu5xKbQIUmPhSfuuDQJH8f8AprZ3XVJgMs7vMXwfSdLtsk48xipbYuVGrjP/fvg9fKpoEg6no+sq3F0QZBX3vKCmvKeosbC+fhvP9ug8YwHlOPr8doskOV+1JIGMDoAzPCGV/W+mpkLTq9JE7lATSSNAEobilN9ATxA5EbLTj0Ho8OpL3sRBrTXsA/z7t/+qbD7SIiTQprxucuuQdQ7JGpfAqwhOHGyRfHkuIWTHNiBMuwSE2UYiudEm/cYf/exxX+FLYWWRTYBQPi1ihORyGHkFqza87CzmF97Uf2DxuviFzcEf05u/FbHtzERZWjwXBVUHxb5MGuAcyAoF1fcT1AmRBeGENNX4ZzAAIowoq6he80d0ZsVrVciJonqg37m1d2MvbWHrjkc3zYDBRPvnfEoD//t8RIw/mNLDyR8r9TCAPLoygReqjiuOEGxO1WgjEgxYr7WVne/E8xF4O0BC9b39V+QzzVqaLu03tg90uEIhSEPqT5ZZMzI49Yo9qVSVo/vW1wHiGq8ikQRAxayvF+il9xia0Q8GESQjvZ2efMl/l2NaJ61UGeS5IOHc58OX0T8mlsus7xKqrMOKlXMzWX/A3PO5u0PoqLn2X4wC2/cIyHSowlmANIY/wDCTTQrr2TtnzX1oeK18yEJuCDuUS3n5H0nSdYEOfPlLshOaLiVUlfBAnuY5mSFr06Yw9EkZJhXyCba3mahkkabWfUFY0vAo2rtWa5buOCHwFxDo2HdxmG6AeA3De7UCNgfW/L6zsQezcllz4TY1hUBCqGZ4iNSCpov6btb9LuQ+laVth9Fq6Z0Q5hVxivSvTXfRYnyDIqm8WFBnCHrVACjOzKq1r+GwhJhyebCIe30Li9nq9dq+j4SbBjICNIusGKJ6PzAJFp63eN1Jwql6cbALmPeBT6DfmxHLbHXeuYE2LeEnhCQFRbvtHttrwUHhebFSXNn84hwH+sDQPfhb0xMqR2Zp1ebc0v4ZHE30pzZecnRIAMi7FgzlPjNjZLCklUrAcMDvSF+nEq4pvLxI1lVFy0dF7ZjeqmRIWWHRbjGqHSvYcRsHTCWtNl4boCaN+GWzX4oZlwfRQUj3Iu8ZyIniMtOn+uD9TKUweEbiOugXASymKMm8S+AMiEMK0drIBdORBtzuxekx0JnE9M9v8GdlRkg/bfEYUvjvhPdYXjQJslW6Sbmlq7EiGqXjwZxLv4WSXMmDYBMwa5tbe+YI0SiLK1/wTtrRUkHovlMaJmOk73pU1yGX/7v6GaZl+Sa4FCU26how+4izR0Mydzi9FRghoStAEIS3YQ3PNeIvHzGlonqqcXlpTNhxqlkB3d7Pi7SlkIkdKAZo+EV6YtyoBG0faKXn4+uLJhjjSOgB4YsYWmLKjzPai01oqk2doxoIMmuVusz4RDwpTlNc9cocLWGgsFbIVFbG8fTDGpvd0Ut/wXeSaUNvsHJakY3FBwdbVRE1j26xPxFkaQihePQoZ2y55rN4FhKDqzNHbbb1yOy0BIxB5qgqsZBsVtV4jJqsmOWC4iOEJV/lPN8Yk0WhDedozlC+d8srFn2VwGyiL4TlyxLNDUHWbH6st8EiU947T8hebRqByjyZnr/lBWRA5CmiHgaXDefJWM2gS6J7w79PLALGyEYQ=="
+    },
+    {
+      id: 22,
+      title: '焦虑不是矫情：七道题，看看它离你有多近',
+      excerpt: '每个人都会焦虑，但并非每份焦虑都需要就医，也并非每份焦虑都能硬扛。我把临床上常用的 GAD-7 自评量表搬到了博客上——七道题，三分钟，给自己一个参照。',
+      cover: 'image/bg_abyss.png',
+      category: 'psychology',
+      categoryName: '心理学',
+      tags: ['焦虑症', '情绪调节', '自我疗愈'],
+      authorId: 1,
+      date: '2026-09-24',
+      readTime: 5,
+      featured: false,
+      content: [
+        { type: 'p', text: '前阵子回边城，孤儿院以前的一个孩子拦住我。他现在在新城做会计，说自己每天睡前心跳得厉害，总觉得“有什么事没做完”；可真爬起来检查，邮件都发了，报表也交了。他问我：“冰姐，我是不是病了？”' },
+        { type: 'p', text: '我说，你先别急着给自己贴标签，也别急着说自己“想多了”。焦虑这件事最麻烦的地方在于：它太常见，常见到我们分不清“正常的担心”和“需要求助的信号”。' },
+        { type: 'h2', text: '担心和焦虑，差在哪里' },
+        { type: 'p', text: '正常的担心通常有具体的对象，事情过去，它就松动了。可当焦虑泛化——说不清自己在怕什么，却持续地紧张、易激惹、难以放松，甚至影响睡眠、工作和身体——它就不再是“性格问题”，更不是“矫情”。' },
+        { type: 'p', text: '我不是医生，没有资格隔着屏幕给谁下诊断。但这些年陪过一些孩子，也陪过一些大人，我知道一件事：能被量化的东西，才比较容易被认真对待。' },
+        { type: 'h2', text: '七道题，给自己一个参照' },
+        { type: 'p', text: '临床上筛查广泛性焦虑最常用的工具之一，是 GAD-7。我们把它做成了网页版：七道题，约三分钟，按照你近两周的真实状态作答，提交后立刻给出分值区间和对应的建议——<a href="../questionnaire/?id=gad7">点这里开始《广泛性焦虑自评量表（GAD-7）》</a>。' },
+        { type: 'p', text: '结果只保存在你自己的浏览器里，不会发给我，也不会发给任何人。它不是诊断书，只是一面小镜子：让你看看最近的自己，到底有多累。' },
+        { type: 'blockquote', text: '量表不能替代医生，但沉默也不能。先看见，再谈怎么办。' },
+        { type: 'p', text: '如果你愿意，做完之后可以回到留言区告诉我——或者，只告诉你自己：那个分数，和你心里隐约的猜测，是不是一样。' },
+        { type: 'p', text: '最后希望破事不会缠上每个人的身上。' }
+      ]
     }
   ],
 
   categories: [
     { name: '悲伤疗愈', count: 7 },
     { name: '抑郁认知', count: 5 },
-    { name: '心理学', count: 4 }
+    { name: '心理学', count: 6 }
   ],
 
   tags: [

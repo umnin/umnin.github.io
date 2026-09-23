@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 404 页可能从任意深度路径被服务器返回，用 <base> 把所有相对路径锚定到站点根目录 -->
+    <base href="/">
+    <script>
+        /* 尽早应用已保存的主题，避免页面加载时明暗闪烁 */
+        try {
+            var __theme = localStorage.getItem('problog-theme');
+            if (__theme) document.documentElement.setAttribute('data-theme', __theme);
+        } catch (e) { }
+    </script>
+    <title>页面不存在 · Pro博客</title>
+    <meta name="description" content="Pro博客 - 你寻找的页面似乎不在原处">
+    <meta name="robots" content="noindex">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <link rel="stylesheet" href="style.css?v=20260924">
+</head>
+
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="navbar" id="navbar">
+        <div class="navbar__container">
+            <a href="./" class="navbar__logo">
+                <span class="navbar__logo-mark">P</span>
+                <span class="navbar__logo-text">ro博客</span>
+            </a>
+
+            <nav class="navbar__menu" id="navMenu">
+                <a href="./" class="navbar__link">首页</a>
+                <a href="grief/" class="navbar__link">悲伤疗愈</a>
+                <a href="depression/" class="navbar__link">抑郁认知</a>
+                <a href="forum/" class="navbar__link">讨论区</a>
+                <a href="message/" class="navbar__link">留言</a>
+                <a href="about/" class="navbar__link">关于</a>
+            </nav>
+
+            <div class="navbar__actions">
+                <div class="search-box" id="searchBox">
+                    <button class="search-box__trigger" id="searchTrigger" aria-label="搜索">
+                        <i data-lucide="search"></i>
+                    </button>
+                    <input type="text" class="search-box__input" id="searchInput" placeholder="搜索文章...">
+                </div>
+                <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                    <i data-lucide="moon" class="theme-toggle__icon--light"></i>
+                    <i data-lucide="sun" class="theme-toggle__icon--dark"></i>
+                </button>
+                <button class="navbar__hamburger" id="hamburger" aria-label="菜单">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- 404 主体：直接复用首页 Hero 的结构与类名 -->
+    <main class="hero" id="notFoundPage">
+        <div class="hero__bg"></div>
+        <div class="hero__grain"></div>
+        <div class="hero__container">
+            <span class="hero__eyebrow reveal">页面未找到</span>
+            <h1 class="hero__title reveal" style="font-size: clamp(4rem, 14vw, 9rem);">404</h1>
+            <p class="hero__subtitle reveal">
+                你寻找的页面已不在原处<br class="hero__br">
+                也许它被挪动了·也许它从未存在
+            </p>
+            <div class="hero__actions reveal">
+                <a href="./" class="btn btn--primary">
+                    <i data-lucide="home"></i>
+                    返回首页
+                </a>
+                <a href="search/" class="btn btn--ghost">
+                    <i data-lucide="search"></i>
+                    搜索内容
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="footer__grid">
+                <div class="footer__brand">
+                    <a href="./" class="footer__logo">
+                        <span class="footer__logo-mark">P</span>
+                        <span class="footer__logo-text">ro博客</span>
+                    </a>
+                    <p class="footer__slogan">专业与灵感的交汇，分享有价值的内容。</p>
+                    <div class="footer__socials">
+                        <a href="tel:72232"><i data-lucide="phone"></i></a>
+                        <a href="message/"><i data-lucide="message-circle"></i></a>
+                        <a href="mailto:S_WILL@problog"><i data-lucide="mail"></i></a>
+                        <a href="rss/"><i data-lucide="rss"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer__col">
+                    <h5 class="footer__heading">快速导航</h5>
+                    <ul class="footer__links">
+                        <li><a href="./">首页</a></li>
+                        <li><a href="grief/">悲伤疗愈</a></li>
+                        <li><a href="depression/">抑郁认知</a></li>
+                        <li><a href="forum/">讨论区</a></li>
+                        <li><a href="about/">关于我们</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer__col">
+                    <h5 class="footer__heading">热门专题</h5>
+                    <ul class="footer__links">
+                        <li><a href="search/?tag=丧亲">丧亲哀伤辅导</a></li>
+                        <li><a href="search/?tag=抑郁症">抑郁症认知</a></li>
+                        <li><a href="search/?tag=悲伤五阶段">悲伤五阶段</a></li>
+                        <li><a href="search/?tag=正念">正念与疗愈</a></li>
+                        <li><a href="search/?tag=存在主义">存在主义心理</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer__col">
+                    <h5 class="footer__heading">联系方式</h5>
+                    <ul class="footer__links footer__contact">
+                        <li><i data-lucide="mail"></i> S_WILL@problog</li>
+                        <li><i data-lucide="map-pin"></i> 边城</li>
+                        <li><i data-lucide="clock"></i> 每周六更新</li>
+                        <li><i data-lucide="send"></i> 722-32</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer__bottom">
+                <p>© 2026 Pro博客. All rights reserved.</p>
+                <div class="footer__legal">
+                    <a href="privacy/">隐私政策</a>
+                    <a href="terms/">使用条款</a>
+                    <a href="rss/">RSS 订阅</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 雾气滤镜：有概率覆盖全页 -->
+    <div class="smoke-layer" id="smokeLayer"></div>
+    <!-- 红色滤镜：极低概率覆盖全页 -->
+    <div class="red-layer" id="redLayer"></div>
+    <script>
+        (function () {
+            try {
+                if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                var layer = document.getElementById('smokeLayer');
+                if (!layer) return;
+
+                /* 15% 概率启用雾气 */
+                if (Math.random() > 0.15) return;
+
+                /* 延迟 1-3 秒淡入，让页面先渲染 */
+                setTimeout(function () {
+                    layer.classList.add('is-active');
+                }, 1000 + Math.random() * 2000);
+            } catch (e) { }
+
+            try {
+                var red = document.getElementById('redLayer');
+                if (!red) return;
+
+                /* 1% 概率启用红色滤镜 */
+                if (Math.random() > 0.01) return;
+
+                setTimeout(function () {
+                    red.classList.add('is-active');
+                }, 2000 + Math.random() * 3000);
+            } catch (e) { }
+        })();
+    </script>
+    <script src="articles.js?v=20260924" defer></script>
+    <script src="script.js?v=20260924c" defer></script>
+</body>
+
+</html>

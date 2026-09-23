@@ -1,9 +1,26 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 
+<!-- 
+    ==================================
+    感到孤独吗？在黑夜，从一头走向另一头，一路上只有汹涌的车流相伴，听着铁桥不堪的嘶吼，内心在颤抖吗？
+
+    一个孩子，从家中出走，不吭的冲出门，背着自己的书包，希望在对岸寻得自己的庇护。从立交，走过行人之桥，来到沥青铺满的铁栏边——腿不要停下，即使双眼正凝望着深黑不见底的江水。
+
+    不要再想，父亲凶横的模样没什么怀念的，也不要回忆那些人恶毒的话语，且不要停下……你感到孤独。逆着冰冷的风，愤怒与悔恨在脑中乱撞，眼泪模糊于眼眶之中，还能看得清前方的路吗？
+    ==================================    
+-->
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        /* 尽早应用已保存的主题，避免页面加载时明暗闪烁 */
+        try {
+            var __theme = localStorage.getItem('problog-theme');
+            if (__theme) document.documentElement.setAttribute('data-theme', __theme);
+        } catch (e) { }
+    </script>
     <title>Pro博客 · 专业与灵感的交汇</title>
     <meta name="description" content="Pro博客 - 分享技术洞见、设计灵感与生活思考的高质量博客平台">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +29,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap"
         rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=20260924">
 </head>
 
 <body>
@@ -185,7 +202,7 @@
                         <a href="tel:72232"><i data-lucide="phone"></i></a>
                         <a href="message/"><i data-lucide="message-circle"></i></a>
                         <a href="mailto:S_WILL@problog"><i data-lucide="mail"></i></a>
-                        <a href="#"><i data-lucide="rss"></i></a>
+                        <a href="rss/"><i data-lucide="rss"></i></a>
                     </div>
                 </div>
 
@@ -215,9 +232,9 @@
                     <h5 class="footer__heading">联系方式</h5>
                     <ul class="footer__links footer__contact">
                         <li><i data-lucide="mail"></i> S_WILL@problog</li>
-                        <li><i data-lucide="map-pin"></i> 莱茵·边城</li>
+                        <li><i data-lucide="map-pin"></i> 边城</li>
                         <li><i data-lucide="clock"></i> 每周六更新</li>
-                        <li><i data-lucide="send"></i> 722转32</li>
+                        <li><i data-lucide="send"></i> 722-32</li>
                     </ul>
                 </div>
             </div>
@@ -225,16 +242,49 @@
             <div class="footer__bottom">
                 <p>© 2026 Pro博客. All rights reserved.</p>
                 <div class="footer__legal">
-                    <a href="#">隐私政策</a>
-                    <a href="#">使用条款</a>
-                    <a href="#">RSS 订阅</a>
+                    <a href="privacy/">隐私政策</a>
+                    <a href="terms/">使用条款</a>
+                    <a href="rss/">RSS 订阅</a>
                 </div>
             </div>
         </div>
     </footer>
 
-    <script src="articles.js" defer></script>
-    <script src="script.js" defer></script>
+    <!-- 雾气滤镜：有概率覆盖全页 -->
+    <div class="smoke-layer" id="smokeLayer"></div>
+    <!-- 红色滤镜：极低概率覆盖全页 -->
+    <div class="red-layer" id="redLayer"></div>
+    <script>
+        (function () {
+            try {
+                if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                var layer = document.getElementById('smokeLayer');
+                if (!layer) return;
+
+                /* 15% 概率启用雾气 */
+                if (Math.random() > 0.15) return;
+
+                /* 延迟 1-3 秒淡入，让页面先渲染 */
+                setTimeout(function () {
+                    layer.classList.add('is-active');
+                }, 1000);
+            } catch (e) { }
+
+            try {
+                var red = document.getElementById('redLayer');
+                if (!red) return;
+
+                /* 1% 概率启用红色滤镜 */
+                if (Math.random() > 0.01) return;
+
+                setTimeout(function () {
+                    red.classList.add('is-active');
+                }, 2000 + Math.random() * 3000);
+            } catch (e) { }
+        })();
+    </script>
+    <script src="articles.js?v=20260924" defer></script>
+    <script src="script.js?v=20260924c" defer></script>
 </body>
 
 </html>

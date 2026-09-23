@@ -190,7 +190,7 @@
     }
 
     var articles = (data.articles || []).filter(function (a) {
-      return a.categoryName === topicCfg.categoryName;
+      return !a.hidden && a.categoryName === topicCfg.categoryName;
     });
     var count = articles.length;
 

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 隐藏页：不允许搜索引擎收录 -->
+    <meta name="robots" content="noindex, nofollow">
+    <title>管理后台 · Pro博客</title>
+    <link rel="stylesheet" href="../style.css?v=20260924">
+    <link rel="stylesheet" href="../admin.css">
+    <script>
+        /* 未登录拦截：登录弹窗验证通过后才会写入登录态（本次浏览器会话有效）。
+           直接访问 /admin/ 会被弹回首页。
+           此段需先于渲染执行，故保持内联；后台逻辑在 ../admin.js */
+        (function () {
+            try {
+                if (sessionStorage.getItem('problog_admin') !== '1') {
+                    location.replace('../');
+                }
+                // 本页不加载 script.js，这里手动应用访客的主题偏好，与其余页面保持一致
+                var theme = localStorage.getItem('problog-theme');
+                if (theme) document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) { location.replace('../'); }
+        })();
+    </script>
+</head>
+
+<body>
+    <div class="admin-layout">
+
+        <!-- 侧边栏 -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar__brand">
+                <span class="admin-sidebar__mark">P</span>
+                <span>管理后台</span>
+            </div>
+            <nav class="admin-sidebar__nav" id="adminNav">
+                <a href="#dashboard" class="admin-sidebar__link" data-view="dashboard">仪表盘</a>
+                <a href="#posts" class="admin-sidebar__link" data-view="posts">文章管理</a>
+                <a href="#media" class="admin-sidebar__link" data-view="media">媒体库</a>
+                <a href="#forum" class="admin-sidebar__link" data-view="forum">讨论区</a>
+                <a href="#messages" class="admin-sidebar__link" data-view="messages">留言板</a>
+                <a href="#notes" class="admin-sidebar__link" data-view="notes">内部留言</a>
+                <a href="#authors" class="admin-sidebar__link" data-view="authors">作者</a>
+                <a href="#settings" class="admin-sidebar__link" data-view="settings">设置</a>
+            </nav>
+            <div class="admin-sidebar__foot">
+                <a href="../" class="admin-sidebar__link">查看站点</a>
+                <button type="button" class="admin-sidebar__link admin-sidebar__btn" id="adminLogoutBtn">退出登录</button>
+            </div>
+        </aside>
+
+        <!-- 主内容 -->
+        <main class="admin-main">
+
+            <!-- 仪表盘 -->
+            <section class="admin-view" id="view-dashboard">
+                <h1 class="admin-view__title">仪表盘</h1>
+                <div class="admin-notice">因登录IP地址变更，部分功能不可用</div>
+                <div id="dashboardStats"><!-- JS --></div>
+                <h2 class="admin-section__title">最近文章</h2>
+                <div id="dashboardRecent"><!-- JS --></div>
+                <h2 class="admin-section__title">系统信息</h2>
+                <div id="dashboardSystem"><!-- JS --></div>
+            </section>
+
+            <!-- 文章管理 -->
+            <section class="admin-view" id="view-posts" hidden>
+                <h1 class="admin-view__title">文章管理</h1>
+                <div id="postsTable"><!-- JS --></div>
+            </section>
+
+            <!-- 媒体库 -->
+            <section class="admin-view" id="view-media" hidden>
+                <h1 class="admin-view__title">媒体库</h1>
+                <p class="admin-view__actions"><button type="button" class="admin-btn" data-restricted>上传新媒体</button>
+                </p>
+                <div id="mediaTable"><!-- JS --></div>
+            </section>
+
+            <!-- 讨论区 -->
+            <section class="admin-view" id="view-forum" hidden>
+                <h1 class="admin-view__title">讨论区</h1>
+                <div id="forumTable"><!-- JS --></div>
+            </section>
+
+            <!-- 留言板 -->
+            <section class="admin-view" id="view-messages" hidden>
+                <h1 class="admin-view__title">留言板</h1>
+                <div id="messagesTable"><!-- JS --></div>
+            </section>
+
+            <!-- 内部留言 -->
+            <section class="admin-view" id="view-notes" hidden>
+                <h1 class="admin-view__title">内部留言</h1>
+                <div class="admin-compose">
+                    <div class="admin-field">
+                        <label>收件人</label>
+                        <select id="noteToSelect" class="admin-input">
+                            <option value="xun">xun</option>
+                            <option value="unDead">unDead</option>
+                        </select>
+                    </div>
+                    <div class="admin-field">
+                        <label>内容</label>
+                        <textarea id="noteContentInput" class="admin-input admin-textarea"
+                            placeholder="写给后台的同事…"></textarea>
+                    </div>
+                    <p class="admin-view__actions"><button type="button" class="admin-btn" data-restricted>发送</button>
+                    </p>
+                </div>
+                <div id="notesList">
+                    <!-- JS 动态渲染 -->
+                </div>
+            </section>
+
+            <!-- 作者 -->
+            <section class="admin-view" id="view-authors" hidden>
+                <h1 class="admin-view__title">作者</h1>
+                <div id="authorsTable"><!-- JS --></div>
+            </section>
+
+            <!-- 设置 -->
+            <section class="admin-view" id="view-settings" hidden>
+                <h1 class="admin-view__title">设置</h1>
+                <div id="settingsForm"><!-- JS --></div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- 受限操作提示 -->
+    <div class="admin-toast" id="adminToast" role="alert"></div>
+
+    <script src="../articles.js?v=20260924" defer></script>
+    <script src="../admin.js?v=20260924b" defer></script>
+</body>
+
+</html>
